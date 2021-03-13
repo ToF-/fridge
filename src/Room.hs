@@ -1,16 +1,16 @@
-module Room (Room, cursorPosition, newRoom, temperature)
+module Room (Room, cursorPosition, newRoom, setCursorPosition, temperature)
     where
 
 type Temperature = Double
 type CursorPosition = Int
-data Room = Nil
+data Room = Room { 
+    temperature :: Temperature,
+    cursorPosition :: CursorPosition }
+    deriving (Eq, Show)
 
 
 newRoom :: Room
-newRoom = Nil
+newRoom = Room 15.0 100
 
-temperature :: Room -> Temperature
-temperature = const 15.0 
-
-cursorPosition :: Room -> CursorPosition
-cursorPosition = const 100
+setCursorPosition :: Room -> CursorPosition -> Room
+setCursorPosition room curPos = room { cursorPosition = curPos }
