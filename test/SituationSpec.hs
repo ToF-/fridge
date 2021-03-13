@@ -26,3 +26,12 @@ spec = do
         it "can be halted" $ do
             state (halt (start newSituation)) `shouldBe` Halted
             temperature (room (tick (halt (start newSituation)))) `shouldBe` 15.0
+
+        it "has an history" $ do
+            let s = start newSituation
+                s' = tick s
+                s''= tick s'
+                h = history s''
+            h!!0 `shouldBe` room s
+            h!!1 `shouldBe` room s'
+            h!!2 `shouldBe` room s''
