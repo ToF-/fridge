@@ -24,6 +24,11 @@ dependencies:
 
 library:
   source-dirs: src
+  ghc-options:
+  - -freverse-errors
+  - -Wall
+  - -Werror
+  - -Wincomplete-patterns
 
 executables:
   fridge-exe:
@@ -41,8 +46,13 @@ tests:
     main:                Spec.hs
     source-dirs:         test
     ghc-options:
+    - -freverse-errors
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
+    - -Wall
+    - -Werror
+    - -Wincomplete-patterns
     dependencies:
     - fridge
+    - hspec
