@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 3e019b4605d7dbccbb99006ca03eac2de27caf95ed1e1abb34b582215704cd6a
+-- hash: a26c14b80aff4d4a1471f4dda94054dbac00c7d1b70f95a1b5da5932dcb344e2
 
 name:           fridge
 version:        0.1.0.0
@@ -53,6 +53,7 @@ test-suite fridge-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      RoomSpec
       Paths_fridge
   hs-source-dirs:
       test
