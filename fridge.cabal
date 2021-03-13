@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 6c5b779f32493943402e04af3542bcfa87ad657dc2e14837c830581ca05482ed
+-- hash: 35bf8b2bd4dab059c6a8676ff4ebea1c7eec318f9f6e2bc765ea0dec816dde45
 
 name:           fridge
 version:        0.1.0.0
@@ -29,6 +29,7 @@ library
   exposed-modules:
       Lib
       Room
+      Situation
   other-modules:
       Paths_fridge
   hs-source-dirs:
@@ -55,6 +56,7 @@ test-suite fridge-test
   main-is: Spec.hs
   other-modules:
       RoomSpec
+      SituationSpec
       Paths_fridge
   hs-source-dirs:
       test
