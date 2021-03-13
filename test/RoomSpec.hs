@@ -28,3 +28,9 @@ spec = do
             temperature (evolutions 4 newRoom) `shouldBe` 11.0
             temperature (evolutions 5 newRoom) `shouldBe` 10.0
             temperature (evolutions 6 newRoom) `shouldBe` 9.333333333333334
+
+        it "has its temperature evolving depending on cursor position" $ do
+            temperature (evolve (setCursorPosition newRoom 50)) 
+                `shouldBe` 12.333333333333334
+            temperature (evolve (evolve (setCursorPosition newRoom 200))) 
+                `shouldBe` 19.666666666666664
