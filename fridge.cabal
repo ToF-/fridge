@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: a26c14b80aff4d4a1471f4dda94054dbac00c7d1b70f95a1b5da5932dcb344e2
+-- hash: 6c5b779f32493943402e04af3542bcfa87ad657dc2e14837c830581ca05482ed
 
 name:           fridge
 version:        0.1.0.0
@@ -28,6 +28,7 @@ source-repository head
 library
   exposed-modules:
       Lib
+      Room
   other-modules:
       Paths_fridge
   hs-source-dirs:

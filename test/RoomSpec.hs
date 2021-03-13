@@ -2,9 +2,13 @@ module RoomSpec
     where
 
 import Test.Hspec
+import Room
 
 spec :: SpecWith ()
 spec = do
-    describe "Dummy" $ do
-        it "has a spec" $ do
-            (2+2) `shouldBe` (4 :: Int)
+    describe "A room" $ do
+        it "can be created with initial values" $ do
+            let room = newRoom
+            temperature room `shouldBe` 15.0
+            cursorPosition room `shouldBe` 100
+
