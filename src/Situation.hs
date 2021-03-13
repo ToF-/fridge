@@ -1,4 +1,4 @@
-module Situation (Situation, State (..), newSituation, room, state, start, tick)
+module Situation (Situation, State (..), halt, newSituation, room, state, start, tick)
     where
 
 import Room
@@ -21,3 +21,6 @@ tick :: Situation -> Situation
 tick situation | state situation == Started 
     = situation { room = evolve (room situation) }
                | otherwise = situation
+
+halt :: Situation -> Situation
+halt situation = situation { state = Halted }

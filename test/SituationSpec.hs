@@ -19,8 +19,10 @@ spec = do
             state (start newSituation) `shouldBe` Started
             temperature (room (tick (start newSituation))) `shouldBe` 14.0
 
-    
         it "cannot evolve unless started" $ do
             temperature (room (tick newSituation)) `shouldBe`
                 temperature (room newSituation)
 
+        it "can be halted" $ do
+            state (halt (start newSituation)) `shouldBe` Halted
+            temperature (room (tick (halt (start newSituation)))) `shouldBe` 15.0
