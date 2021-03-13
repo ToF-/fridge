@@ -13,3 +13,8 @@ spec = do
 
         it "is initially in halted state" $ do
             state newSituation `shouldBe` Halted
+
+
+        it "can be started and evolve" $ do
+            state (start newSituation) `shouldBe` Started
+            temperature (room (tick (start newSituation))) `shouldBe` 14.0
