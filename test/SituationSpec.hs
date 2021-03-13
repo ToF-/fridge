@@ -35,3 +35,9 @@ spec = do
             h!!0 `shouldBe` room s
             h!!1 `shouldBe` room s'
             h!!2 `shouldBe` room s''
+
+        it "can be reset" $ do
+            let s = reset (tick (tick (tick (start newSituation))))
+            state s `shouldBe` Halted
+            length (history s) `shouldBe` 1
+            temperature (room s) `shouldBe` 15.0

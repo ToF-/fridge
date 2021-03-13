@@ -1,4 +1,4 @@
-module Situation (Situation, State (..), halt, history, newSituation, room, state, start, tick)
+module Situation (Situation, State (..), halt, history, newSituation, reset, room, state, start, tick)
     where
 
 import Room
@@ -31,4 +31,5 @@ tick situation | state situation == Started
 halt :: Situation -> Situation
 halt situation = situation { state = Halted }
 
-
+reset :: Situation -> Situation
+reset = const newSituation
