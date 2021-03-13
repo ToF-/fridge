@@ -18,4 +18,6 @@ start :: Situation -> Situation
 start situation = situation { state = Started }
 
 tick :: Situation -> Situation
-tick situation = situation { room = evolve (room situation) }
+tick situation | state situation == Started 
+    = situation { room = evolve (room situation) }
+               | otherwise = situation
