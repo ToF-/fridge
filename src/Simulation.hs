@@ -20,4 +20,3 @@ addSituation :: Name -> Simulation -> Either String Simulation
 addSituation name (Simulation ss) = case lookup name ss of
                                       Nothing -> Right (Simulation ((name, newSituation) : ss))
                                       Just _ -> Left ("a situation already exists with name:" ++ name)
-                                      

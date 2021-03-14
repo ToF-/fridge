@@ -1,6 +1,6 @@
 {-# LANGUAGE DeriveGeneric #-}
 
-module Situation (Situation, State (..), halt, history, newSituation, reset, room, state, start, tick)
+module Situation (Situation, State (..), change, halt, history, newSituation, reset, room, state, start, tick)
     where
 
 import Room
@@ -40,3 +40,10 @@ halt situation = situation { state = Halted }
 
 reset :: Situation -> Situation
 reset = const newSituation
+
+change :: CursorPosition -> Situation -> Situation
+change _ sit | state sit == Halted = sit
+change pos sit = sit { rooms = (room' : rooms') }
+    where
+        room' = (head (rooms sit)) { cursorPosition = pos }
+        rooms'= tail (rooms sit)

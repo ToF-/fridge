@@ -17,7 +17,6 @@ spec = do
         it "is initially in halted state" $ do
             state newSituation `shouldBe` Halted
 
-
         it "can be started and evolve" $ do
             state (start newSituation) `shouldBe` Started
             temperature (room (tick (start newSituation))) `shouldBe` 14.0
@@ -48,3 +47,15 @@ spec = do
         it "can be encoded into json" $ do
             encode newSituation `shouldBe`
                 "{\"rooms\":[{\"temperatures\":[15,15,15,15,15],\"cursorPosition\":100}],\"state\":\"Halted\"}"
+
+        it "can have its room cursor position changed" $ do
+            let s = change 50 (start newSituation)
+            encode s `shouldBe` 
+                "{\"rooms\":[{\"temperatures\":[15,15,15,15,15],\"cursorPosition\":50}],\"state\":\"Started\"}"
+
+
+        it "cannot have its room cursor position changed unless started" $ do
+            let s = change 50 newSituation
+            encode s `shouldBe` 
+                "{\"rooms\":[{\"temperatures\":[15,15,15,15,15],\"cursorPosition\":100}],\"state\":\"Halted\"}"
+
