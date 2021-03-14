@@ -5,7 +5,7 @@ module RoomSpec
 
 import Test.Hspec
 import Room
-import Data.Aeson 
+import Data.Aeson
 
 evolutions :: Int -> Room -> Room
 evolutions 0 room = room
@@ -33,11 +33,15 @@ spec = do
             temperature (evolutions 6 newRoom) `shouldBe` 9.333333333333334
 
         it "has its temperature evolving depending on cursor position" $ do
-            temperature (evolve (setCursorPosition newRoom 50)) 
+            temperature (evolve (setCursorPosition newRoom 50))
                 `shouldBe` 12.333333333333334
-            temperature (evolve (evolve (setCursorPosition newRoom 200))) 
+            temperature (evolve (evolve (setCursorPosition newRoom 200)))
                 `shouldBe` 19.666666666666664
 
         it "can be encode into json" $ do
-            encode (evolve newRoom) `shouldBe` 
-                "{\"temperatures\":[14,15,15,15,15,15],\"cursorPosition\":100}"
+            encode (evolve newRoom) `shouldBe`
+                "{\"temperatures\":[14,15,15,15,15],\"cursorPosition\":100}"
+
+        it "keeps track of only 5 temperatures" $ do
+            encode (evolutions 10 newRoom) `shouldBe`
+                "{\"temperatures\":[10,9.333333333333334,9,9,9.333333333333334],\"cursorPosition\":100}"

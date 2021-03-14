@@ -26,7 +26,7 @@ temperature room = head (temperatures room)
 evolve :: Room -> Room
 evolve room = room { temperatures = temperatures' }
     where
-        temperatures' = (temperature room + delta) : temperatures room
+        temperatures' = take 5 ((temperature room + delta) : temperatures room)
         delta = (fromIntegral (cursorPosition room) 
                 / 10.0 + 2.0 - (temperatures room) !! 4) 
                 / 3.0
