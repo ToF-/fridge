@@ -58,4 +58,8 @@ spec = do
             (sim >>= getState "ToF") `shouldBe` Right (Started, 15.0, 100)
             (sim >>= getState "Ben") `shouldBe` Right (Started, 15.0, 100)
 
+        it "can halt all situations" $ do
+            let sim = return newSimulation >>= addSituation "ToF" >>= addSituation "Ben" >>= startAllSituations >>= haltAllSituations
+            (sim >>= getState "ToF") `shouldBe` Right (Halted, 15.0, 100)
+            (sim >>= getState "Ben") `shouldBe` Right (Halted, 15.0, 100)
 

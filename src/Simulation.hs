@@ -1,4 +1,4 @@
-module Simulation (Simulation, addSituation, changeSituation, getState, newSimulation, resetSituation, startSituation, startAllSituations, haltSituation, tickSituation)
+module Simulation (Simulation, addSituation, changeSituation, getState, newSimulation, haltAllSituations, haltSituation, resetSituation, startSituation, startAllSituations, tickSituation)
     where
 
 import Room
@@ -51,3 +51,6 @@ changeSituation name pos s = return s >>= checkName name
 
 startAllSituations :: Simulation -> Either String Simulation
 startAllSituations (Simulation ss) = return (Simulation (M.map start ss))
+
+haltAllSituations :: Simulation -> Either String Simulation
+haltAllSituations (Simulation ss) = return (Simulation (M.map halt ss))
