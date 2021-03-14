@@ -27,6 +27,10 @@ spec = do
             let room = setCursorPosition newRoom (-1)
             cursorPosition room `shouldBe` 0
 
+        it "cannot have its cursor position changed higher than 200" $ do
+            let room = setCursorPosition newRoom 201
+            cursorPosition room `shouldBe` 200
+
         it "has its temperature evolving at each evolution" $ do
             temperature newRoom `shouldBe` 15.0
             temperature (evolutions 1 newRoom) `shouldBe` 14.0

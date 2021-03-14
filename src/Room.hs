@@ -18,7 +18,7 @@ newRoom :: Room
 newRoom = Room [15.0, 15.0, 15.0, 15.0, 15.0] 100
 
 setCursorPosition :: Room -> CursorPosition -> Room
-setCursorPosition room curPos = room { cursorPosition = (max 0 curPos) }
+setCursorPosition room curPos = room { cursorPosition = (min 200 (max 0 curPos)) }
 
 temperature :: Room -> Temperature
 temperature room = head (temperatures room)
