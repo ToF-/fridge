@@ -38,7 +38,7 @@ spec = do
             temperature (evolve (evolve (setCursorPosition newRoom 200)))
                 `shouldBe` 19.666666666666664
 
-        it "can be encode into json" $ do
+        it "can be encoded into json" $ do
             encode (evolve newRoom) `shouldBe`
                 "{\"temperatures\":[14,15,15,15,15],\"cursorPosition\":100}"
 
