@@ -1,4 +1,4 @@
-module Simulation (Simulation, addSituation, changeSituation, getState, newSimulation, resetSituation, startSituation, haltSituation, tickSituation)
+module Simulation (Simulation, addSituation, changeSituation, getState, newSimulation, resetSituation, startSituation, startAllSituations, haltSituation, tickSituation)
     where
 
 import Room
@@ -48,3 +48,6 @@ changeSituation name pos s = return s >>= checkName name
     >>= (\(Simulation ss) -> let sit = fromJust (M.lookup name ss) in case state sit of
                                                                       Started -> Right (Simulation (M.adjust (change pos) name ss))
                                                                       Halted -> Left ("situation for " ++ name ++ " is not started"))
+
+startAllSituations :: Simulation -> Either String Simulation
+startAllSituations (Simulation ss) = return (Simulation (M.map start ss))
