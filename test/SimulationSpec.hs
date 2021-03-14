@@ -34,5 +34,11 @@ spec = do
             (sim >>= changeSituation "Ben" 50) `shouldBe` Left "no situation exists with name:Ben"
 
 
+        it "cannot change a situation that is not started" $ do
+            let sim = addSituation "ToF" newSimulation
+            (sim >>= changeSituation "ToF" 50 >>= getState "ToF") 
+                `shouldBe` Left "situation for ToF is not started"
+
+
 
 

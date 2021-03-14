@@ -34,4 +34,6 @@ update target new ((name,sit):ss) | name == target = ((name, new) : ss)
 changeSituation :: Name -> CursorPosition -> Simulation -> Either String Simulation
 changeSituation name pos (Simulation ss) = case lookup name ss of
                                     Nothing -> Left ("no situation exists with name:" ++ name)
-                                    Just sit -> Right (Simulation (update name (change pos sit) ss))
+                                    Just sit -> case state sit of
+                                                  Started -> Right (Simulation (update name (change pos sit) ss))
+                                                  Halted -> Left ("situation for "++name++" is not started")
