@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 6479a9107bcdbc41246607923305f72cf373d3426884fa2ae36f517ada4c6bb9
+-- hash: a318ebb9924bdd1a243ddfa6f2b84852ee0dfce6e7baf99015c9297cbb4adcee
 
 name:           fridge
 version:        0.1.0.0
@@ -39,6 +39,7 @@ library
   build-depends:
       aeson
     , base >=4.7 && <5
+    , containers
   default-language: Haskell2010
 
 executable fridge-exe
@@ -51,6 +52,7 @@ executable fridge-exe
   build-depends:
       aeson
     , base >=4.7 && <5
+    , containers
     , fridge
   default-language: Haskell2010
 
@@ -68,6 +70,7 @@ test-suite fridge-test
   build-depends:
       aeson
     , base >=4.7 && <5
+    , containers
     , fridge
     , hspec
   default-language: Haskell2010
