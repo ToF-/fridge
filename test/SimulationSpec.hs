@@ -63,7 +63,8 @@ spec = do
             (sim >>= getState "ToF") `shouldBe` Right (Halted, 15.0, 100)
             (sim >>= getState "Ben") `shouldBe` Right (Halted, 15.0, 100)
 
-        it "can tick all situations" $ do
-            let sim = return newSimulation >>= addSituation "ToF" >>= addSituation "Ben" >>= startAllSituations >>= tickAllSituations
+        it "can tick all situations that are started" $ do
+            let sim = return newSimulation >>= addSituation "ToF" >>= addSituation "Ben" >>=  addSituation "Gus" >>= startAllSituations >>= haltSituation "Gus" >>= tickAllSituations
             (sim >>= getState "ToF") `shouldBe` Right (Started, 14.0, 100)
             (sim >>= getState "Ben") `shouldBe` Right (Started, 14.0, 100)
+            (sim >>= getState "Gus") `shouldBe` Right (Halted, 15.0, 100)
