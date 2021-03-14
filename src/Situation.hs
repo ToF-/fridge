@@ -1,15 +1,22 @@
+{-# LANGUAGE DeriveGeneric #-}
+
 module Situation (Situation, State (..), halt, history, newSituation, reset, room, state, start, tick)
     where
 
 import Room
+import GHC.Generics
+import Data.Aeson
 
 data Situation = Situation {
     rooms :: [Room],
     state :: State }
-    deriving (Eq, Show)
+    deriving (Generic, Eq, Show)
 
 data State = Halted | Started
-    deriving (Eq, Show)
+    deriving (Generic, Eq, Show)
+
+instance ToJSON State
+instance ToJSON Situation
 
 room :: Situation -> Room
 room = head . rooms

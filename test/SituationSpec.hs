@@ -1,9 +1,12 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module SituationSpec
     where
 
 import Test.Hspec
 import Situation
 import Room
+import Data.Aeson
 
 spec :: SpecWith ()
 spec = do
@@ -41,3 +44,7 @@ spec = do
             state s `shouldBe` Halted
             length (history s) `shouldBe` 1
             temperature (room s) `shouldBe` 15.0
+
+        it "can be encoded into json" $ do
+            encode newSituation `shouldBe`
+                "{\"rooms\":[{\"temperatures\":[15,15,15,15,15],\"cursorPosition\":100}],\"state\":\"Halted\"}"
