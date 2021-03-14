@@ -1,4 +1,4 @@
-module Simulation (Simulation, addSituation, changeSituation, getState, newSimulation, startSituation)
+module Simulation (Simulation, addSituation, changeSituation, getState, newSimulation, startSituation, haltSituation)
     where
 
 import Room
@@ -25,6 +25,10 @@ addSituation name (Simulation ss) = case M.lookup name ss of
 startSituation :: Name -> Simulation -> Either String Simulation
 startSituation name s = return s >>= checkName name 
     >>= (\(Simulation ss) -> Right (Simulation (M.adjust start name ss)))
+
+haltSituation :: Name -> Simulation -> Either String Simulation
+haltSituation name s = return s >>= checkName name 
+    >>= (\(Simulation ss) -> Right (Simulation (M.adjust halt name ss)))
 
 checkName :: Name -> Simulation -> Either String Simulation
 checkName name (Simulation ss) = case M.lookup name ss of

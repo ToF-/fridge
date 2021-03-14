@@ -33,12 +33,14 @@ spec = do
                 `shouldBe` Right (Started, 15.0, 50)
             (sim >>= changeSituation "Ben" 50) `shouldBe` Left "no situation exists with name:Ben"
 
-
         it "cannot change a situation that is not started" $ do
             let sim = addSituation "ToF" newSimulation
             (sim >>= changeSituation "ToF" 50 >>= getState "ToF") 
                 `shouldBe` Left "situation for ToF is not started"
 
-
+        it "can halt a situation once created" $ do
+            let sim = (addSituation "ToF" newSimulation) >>= startSituation "ToF"
+            (sim >>= haltSituation "ToF" >>= getState "ToF") `shouldBe` Right (Halted, 15.0, 100)
+            (sim >>= haltSituation "Ben") `shouldBe` Left "no situation exists with name:Ben"
 
 
