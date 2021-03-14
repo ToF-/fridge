@@ -22,4 +22,12 @@ spec = do
             let sim = addSituation "ToF" newSimulation 
             (sim >>= addSituation "ToF") `shouldBe` Left "a situation already exists with name:ToF" 
 
+        it "can start a situation once created" $ do
+            let sim = addSituation "ToF" newSimulation
+            (sim >>= startSituation "ToF" >>= getState "ToF") `shouldBe` Right (Started, 15.0, 100)
+            (sim >>= startSituation "Ben") `shouldBe` Left "no situation exists with name:Ben"
+
+
+
+
 
