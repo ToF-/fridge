@@ -1,8 +1,11 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module RoomSpec
     where
 
 import Test.Hspec
 import Room
+import Data.Aeson 
 
 evolutions :: Int -> Room -> Room
 evolutions 0 room = room
@@ -34,3 +37,7 @@ spec = do
                 `shouldBe` 12.333333333333334
             temperature (evolve (evolve (setCursorPosition newRoom 200))) 
                 `shouldBe` 19.666666666666664
+
+        it "can be encode into json" $ do
+            encode (evolve newRoom) `shouldBe` 
+                "{\"temperatures\":[14,15,15,15,15,15],\"cursorPosition\":100}"
