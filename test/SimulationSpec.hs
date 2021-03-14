@@ -31,6 +31,7 @@ spec = do
             let sim = addSituation "ToF" newSimulation
             (sim >>= startSituation "ToF" >>= changeSituation "ToF" 50 >>= getState "ToF") 
                 `shouldBe` Right (Started, 15.0, 50)
+            (sim >>= changeSituation "Ben" 50) `shouldBe` Left "no situation exists with name:Ben"
 
 
 
