@@ -27,6 +27,10 @@ spec = do
             (sim >>= startSituation "ToF" >>= getState "ToF") `shouldBe` Right (Started, 15.0, 100)
             (sim >>= startSituation "Ben") `shouldBe` Left "no situation exists with name:Ben"
 
+        it "can change a situation once created" $ do
+            let sim = addSituation "ToF" newSimulation
+            (sim >>= startSituation "ToF" >>= changeSituation "ToF" 50 >>= getState "ToF") 
+                `shouldBe` Right (Started, 15.0, 50)
 
 
 

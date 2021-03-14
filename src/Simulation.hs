@@ -1,4 +1,4 @@
-module Simulation (Simulation, addSituation, getState, newSimulation, startSituation)
+module Simulation (Simulation, addSituation, changeSituation, getState, newSimulation, startSituation)
     where
 
 import Room
@@ -24,9 +24,14 @@ addSituation name (Simulation ss) = case lookup name ss of
 startSituation :: Name -> Simulation -> Either String Simulation
 startSituation name (Simulation ss) = case lookup name ss of
                                         Nothing -> Left ("no situation exists with name:" ++ name)
-                                        Just sit -> Right (Simulation (update name (sit { state = Started }) ss))
+                                        Just sit -> Right (Simulation (update name (start sit) ss))
 
 update :: Name -> Situation -> [(Name, Situation)] -> [(Name, Situation)]
 update _ _ [] = []
 update target new ((name,sit):ss) | name == target = ((name, new) : ss) 
                                   | otherwise      = (name,sit): update target new ss
+
+changeSituation :: Name -> CursorPosition -> Simulation -> Either String Simulation
+changeSituation name pos (Simulation ss) = case lookup name ss of
+                                    Nothing -> Left ("no situation exists with name:" ++ name)
+                                    Just sit -> Right (Simulation (update name (change pos sit) ss))
