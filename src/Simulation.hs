@@ -1,4 +1,4 @@
-module Simulation (Simulation, addSituation, applyAll, changeSituation, getState, newSimulation, haltSituation, resetSituation, startSituation, tickSituation)
+module Simulation (addSituation, apply, applyAll, changeSituation, getState, newSimulation)
     where
 
 import Room
@@ -22,22 +22,6 @@ addSituation name (Simulation ss) = case M.lookup name ss of
                                       Nothing -> Right (Simulation (M.insert name newSituation ss))
                                       Just _ -> Left ("a situation already exists with name:" ++ name)
 
-startSituation :: Name -> Simulation -> Either String Simulation
-startSituation name s = return s >>= checkName name 
-    >>= (\(Simulation ss) -> Right (Simulation (M.adjust start name ss)))
-
-haltSituation :: Name -> Simulation -> Either String Simulation
-haltSituation name s = return s >>= checkName name 
-    >>= (\(Simulation ss) -> Right (Simulation (M.adjust halt name ss)))
-
-resetSituation :: Name -> Simulation -> Either String Simulation
-resetSituation name s = return s >>= checkName name 
-    >>= (\(Simulation ss) -> Right (Simulation (M.adjust reset name ss)))
-
-tickSituation :: Name -> Simulation -> Either String Simulation
-tickSituation name s = return s >>= checkName name 
-    >>= (\(Simulation ss) -> Right (Simulation (M.adjust tick name ss)))
-
 checkName :: Name -> Simulation -> Either String Simulation
 checkName name (Simulation ss) = case M.lookup name ss of
                                    Nothing -> Left ("no situation exists with name:" ++ name)
@@ -48,6 +32,10 @@ changeSituation name pos s = return s >>= checkName name
     >>= (\(Simulation ss) -> let sit = fromJust (M.lookup name ss) in case state sit of
                                                                       Started -> Right (Simulation (M.adjust (change pos) name ss))
                                                                       Halted -> Left ("situation for " ++ name ++ " is not started"))
+
+apply :: (Situation -> Situation) -> Name -> Simulation -> Either String Simulation
+apply f name s = return s >>= checkName name
+    >>= (\(Simulation ss) -> Right (Simulation (M.adjust f name ss)))
 
 applyAll :: (Situation -> Situation) -> Simulation -> Either String Simulation
 applyAll f (Simulation ss) = return (Simulation (M.map f ss))

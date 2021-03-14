@@ -24,12 +24,12 @@ spec = do
 
         it "can start a situation once created" $ do
             let sim = addSituation "ToF" newSimulation
-            (sim >>= startSituation "ToF" >>= getState "ToF") `shouldBe` Right (Started, 15.0, 100)
-            (sim >>= startSituation "Ben") `shouldBe` Left "no situation exists with name:Ben"
+            (sim >>= apply start "ToF" >>= getState "ToF") `shouldBe` Right (Started, 15.0, 100)
+            (sim >>= apply start "Ben") `shouldBe` Left "no situation exists with name:Ben"
 
         it "can change a situation once created" $ do
             let sim = addSituation "ToF" newSimulation
-            (sim >>= startSituation "ToF" >>= changeSituation "ToF" 50 >>= getState "ToF") 
+            (sim >>= apply start "ToF" >>= changeSituation "ToF" 50 >>= getState "ToF") 
                 `shouldBe` Right (Started, 15.0, 50)
             (sim >>= changeSituation "Ben" 50) `shouldBe` Left "no situation exists with name:Ben"
 
@@ -39,19 +39,19 @@ spec = do
                 `shouldBe` Left "situation for ToF is not started"
 
         it "can halt a situation once created" $ do
-            let sim = (addSituation "ToF" newSimulation) >>= startSituation "ToF"
-            (sim >>= haltSituation "ToF" >>= getState "ToF") `shouldBe` Right (Halted, 15.0, 100)
-            (sim >>= haltSituation "Ben") `shouldBe` Left "no situation exists with name:Ben"
+            let sim = (addSituation "ToF" newSimulation) >>= apply start "ToF"
+            (sim >>= apply halt "ToF" >>= getState "ToF") `shouldBe` Right (Halted, 15.0, 100)
+            (sim >>= apply halt "Ben") `shouldBe` Left "no situation exists with name:Ben"
 
         it "can reset a situation once created" $ do
-            let sim = (addSituation "ToF" newSimulation) >>= startSituation "ToF" >>= changeSituation "ToF" 50
-            (sim >>= resetSituation "ToF" >>= getState "ToF") `shouldBe` Right (Halted, 15.0, 100)
-            (sim >>= resetSituation "Ben") `shouldBe` Left "no situation exists with name:Ben"
+            let sim = (addSituation "ToF" newSimulation) >>= apply start "ToF" >>= changeSituation "ToF" 50
+            (sim >>= apply reset "ToF" >>= getState "ToF") `shouldBe` Right (Halted, 15.0, 100)
+            (sim >>= apply reset "Ben") `shouldBe` Left "no situation exists with name:Ben"
 
         it "can tick a situation once created" $ do
-            let sim = (addSituation "ToF" newSimulation) >>= startSituation "ToF"
-            (sim >>= tickSituation "ToF" >>= getState "ToF") `shouldBe` Right (Started, 14.0, 100)
-            (sim >>= tickSituation "Ben") `shouldBe` Left "no situation exists with name:Ben"
+            let sim = (addSituation "ToF" newSimulation) >>= apply start "ToF"
+            (sim >>= apply tick "ToF" >>= getState "ToF") `shouldBe` Right (Started, 14.0, 100)
+            (sim >>= apply tick "Ben") `shouldBe` Left "no situation exists with name:Ben"
 
         it "can start all situations" $ do
             let sim = return newSimulation >>= addSituation "ToF" >>= addSituation "Ben" >>= applyAll start
@@ -64,7 +64,7 @@ spec = do
             (sim >>= getState "Ben") `shouldBe` Right (Halted, 15.0, 100)
 
         it "can tick all situations that are started" $ do
-            let sim = return newSimulation >>= addSituation "ToF" >>= addSituation "Ben" >>=  addSituation "Gus" >>= applyAll start >>= haltSituation "Gus" >>= applyAll tick
+            let sim = return newSimulation >>= addSituation "ToF" >>= addSituation "Ben" >>=  addSituation "Gus" >>= applyAll start >>= apply halt "Gus" >>= applyAll tick
             (sim >>= getState "ToF") `shouldBe` Right (Started, 14.0, 100)
             (sim >>= getState "Ben") `shouldBe` Right (Started, 14.0, 100)
             (sim >>= getState "Gus") `shouldBe` Right (Halted, 15.0, 100)
