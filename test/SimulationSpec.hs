@@ -54,17 +54,17 @@ spec = do
             (sim >>= tickSituation "Ben") `shouldBe` Left "no situation exists with name:Ben"
 
         it "can start all situations" $ do
-            let sim = return newSimulation >>= addSituation "ToF" >>= addSituation "Ben" >>= startAllSituations
+            let sim = return newSimulation >>= addSituation "ToF" >>= addSituation "Ben" >>= applyAll start
             (sim >>= getState "ToF") `shouldBe` Right (Started, 15.0, 100)
             (sim >>= getState "Ben") `shouldBe` Right (Started, 15.0, 100)
 
         it "can halt all situations" $ do
-            let sim = return newSimulation >>= addSituation "ToF" >>= addSituation "Ben" >>= startAllSituations >>= haltAllSituations
+            let sim = return newSimulation >>= addSituation "ToF" >>= addSituation "Ben" >>= applyAll start >>= applyAll halt
             (sim >>= getState "ToF") `shouldBe` Right (Halted, 15.0, 100)
             (sim >>= getState "Ben") `shouldBe` Right (Halted, 15.0, 100)
 
         it "can tick all situations that are started" $ do
-            let sim = return newSimulation >>= addSituation "ToF" >>= addSituation "Ben" >>=  addSituation "Gus" >>= startAllSituations >>= haltSituation "Gus" >>= tickAllSituations
+            let sim = return newSimulation >>= addSituation "ToF" >>= addSituation "Ben" >>=  addSituation "Gus" >>= applyAll start >>= haltSituation "Gus" >>= applyAll tick
             (sim >>= getState "ToF") `shouldBe` Right (Started, 14.0, 100)
             (sim >>= getState "Ben") `shouldBe` Right (Started, 14.0, 100)
             (sim >>= getState "Gus") `shouldBe` Right (Halted, 15.0, 100)
