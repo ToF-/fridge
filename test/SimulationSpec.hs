@@ -43,4 +43,8 @@ spec = do
             (sim >>= haltSituation "ToF" >>= getState "ToF") `shouldBe` Right (Halted, 15.0, 100)
             (sim >>= haltSituation "Ben") `shouldBe` Left "no situation exists with name:Ben"
 
+        it "can reset a situation once created" $ do
+            let sim = (addSituation "ToF" newSimulation) >>= startSituation "ToF" >>= changeSituation "ToF" 50
+            (sim >>= resetSituation "ToF" >>= getState "ToF") `shouldBe` Right (Halted, 15.0, 100)
+            (sim >>= resetSituation "Ben") `shouldBe` Left "no situation exists with name:Ben"
 
