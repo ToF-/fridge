@@ -1,6 +1,6 @@
 {-# LANGUAGE DeriveGeneric #-}
 
-module Room (Room, cursorPosition, newRoom, setCursorPosition, temperature, evolve)
+module Room (Room, Temperature, CursorPosition, cursorPosition, newRoom, setCursorPosition, temperature, evolve)
     where
 import GHC.Generics
 import Data.Aeson
