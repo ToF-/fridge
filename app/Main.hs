@@ -42,12 +42,9 @@ main = do
 repeatedAction :: IORef (Either String Simulation) -> IO ()
 repeatedAction ref = do
     simulation <- readIORef ref
-    case simulation of
-        Left _ -> return ()
-        Right sim -> do
-            let simulation' = simulation >>= applyAll tick
-            atomicModifyIORef' ref $ const (simulation',simulation')
-            return ()
+    let simulation' = simulation >>= applyAll tick
+    atomicModifyIORef' ref $ const (simulation',simulation')
+    return ()
 
 app :: Api
 app = do
