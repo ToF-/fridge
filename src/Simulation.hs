@@ -33,8 +33,8 @@ checkName name (Simulation ss) = case M.lookup name ss of
                                    Nothing -> Left ("no situation exists with name:" ++ name)
                                    Just _ -> Right (Simulation ss)
 
-changeSituation :: Name -> CursorPosition -> Simulation -> Either String Simulation
-changeSituation name pos s = return s >>= checkName name
+changeSituation :: CursorPosition -> Name -> Simulation -> Either String Simulation
+changeSituation pos name s = return s >>= checkName name
     >>= (\(Simulation ss) -> let sit = fromJust (M.lookup name ss) in case state sit of
                                                                       Started -> Right (Simulation (M.adjust (change pos) name ss))
                                                                       Halted -> Left ("situation for " ++ name ++ " is not started"))
