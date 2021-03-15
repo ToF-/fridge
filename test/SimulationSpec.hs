@@ -6,6 +6,7 @@ module SimulationSpec
 import Test.Hspec
 import Situation
 import Simulation
+import Data.Aeson
 
 spec :: SpecWith ()
 spec = do
@@ -68,3 +69,7 @@ spec = do
             (sim >>= getState "ToF") `shouldBe` Right (Started, 14.0, 100)
             (sim >>= getState "Ben") `shouldBe` Right (Started, 14.0, 100)
             (sim >>= getState "Gus") `shouldBe` Right (Halted, 15.0, 100)
+
+        it "can be encoded as JSON" $ do
+            let sim = return newSimulation >>= addSituation "ToF"
+            encode sim `shouldBe` "{\"Right\":{\"ToF\":{\"rooms\":[{\"temperatures\":[15,15,15,15,15],\"cursorPosition\":100}],\"state\":\"Halted\"}}}"

@@ -1,14 +1,20 @@
-module Simulation (addSituation, apply, applyAll, changeSituation, getState, newSimulation)
+{-# LANGUAGE DeriveGeneric #-}
+module Simulation (Simulation, addSituation, apply, applyAll, changeSituation, getState, newSimulation)
     where
 
 import Room
 import Situation
 import Data.Maybe (fromJust)
 import Data.Map as M
+import GHC.Generics
+import Data.Aeson
+
 
 type Name = String
 data Simulation = Simulation (Map Name Situation)
-    deriving (Eq, Show)
+    deriving (Generic, Eq, Show)
+
+instance ToJSON Simulation
 
 newSimulation :: Simulation
 newSimulation = Simulation (M.empty)
