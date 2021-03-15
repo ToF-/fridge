@@ -26,6 +26,8 @@ dependencies:
 - text
 - mtl
 - containers
+- timers
+- suspend
 
 library:
   source-dirs: src
