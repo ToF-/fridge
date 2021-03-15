@@ -18,6 +18,7 @@ import           Control.Monad.Trans (liftIO)
 data AppState = AppState (IORef (Either String Simulation))
 
 type Api = SpockM () () AppState ()
+type ApiAction a = SpockAction () () AppState a
 
 main :: IO ()
 main = do
@@ -31,7 +32,19 @@ app = do
         (AppState ref) <- Web.Spock.getState
         simulation <- liftIO $ readIORef ref
         json $ simulation
-    get ("state" <//> var) $ \name -> do
+    get ("situation" <//> var) $ \name -> do
         (AppState ref) <- Web.Spock.getState
         simulation <- liftIO $ readIORef ref
         json $ simulation >>= Simulation.getState name
+
+    post "situation" $ do
+        name <- jsonBody' :: ApiAction Name
+        (AppState ref) <- Web.Spock.getState
+        simulation <- liftIO $ readIORef ref
+        let simulation' = simulation >>= addSituation name
+        case simulation' of
+            Left _ -> json $ simulation'
+            Right sim -> do
+                result <- liftIO $ atomicModifyIORef' ref $ const (simulation', simulation')
+                json $ result >>= Simulation.getState name
+
