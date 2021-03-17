@@ -17,12 +17,12 @@ spec = do
                 get "/situations" `shouldRespondWith` 
                     "{\"Right\":{}}" { matchStatus = 200 }
 
-            it "serves a Left value when querying for non existant situation" $ do
+            it "serves a Left value when queried for non existing situation" $ do
                 get "/situations/Ben" `shouldRespondWith` 
                     "{\"Left\":\"no situation exists with name:Ben\"}"
                         { matchStatus = 204 }
 
-            it "serves a Right value when creating a new situation" $ do
+            it "serves a Right value when queried for an existing situation" $ do
                 post "/situations" "\"Gus\"" `shouldRespondWith`
                     "{\"Right\":[\"Halted\",15.0,100]}"
                         { matchStatus = 201 }
@@ -31,6 +31,10 @@ spec = do
                         { matchStatus = 200 }
 
         describe "POST /situations" $ do
+            it "serves a Right value when creating a new situation" $ do
+                post "/situations" "\"Gus\"" `shouldRespondWith`
+                    "{\"Right\":[\"Halted\",15.0,100]}"
+                        { matchStatus = 201 }
             it "serves a Left value when creating an already  existing situation" $ do
                 post "/situations" "\"Gus\"" `shouldRespondWith`
                     "{\"Right\":[\"Halted\",15.0,100]}"
