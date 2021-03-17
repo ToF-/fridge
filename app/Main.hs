@@ -21,5 +21,4 @@ import           Control.Monad.Trans (liftIO)
 
 
 main :: IO ()
-main = runSpock 8080 app
-
+main = runSpock 8080 (app (sDelay 60))

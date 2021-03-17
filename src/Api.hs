@@ -16,6 +16,7 @@ import           Control.Concurrent.Suspend
 import           Control.Concurrent.Timer
 import           Control.Monad.Trans (liftIO)
 import           Network.Wai (Middleware)
+import Network.HTTP.Types.Status
 
 data AppState = AppState (IORef (Either String Simulation))
 
@@ -38,11 +39,11 @@ repeatedAction ref = do
     _ <- atomicModifyIORef' ref $ const (simulation',simulation')
     return ()
 
-app :: IO Middleware
-app = do
-    ref <- newIORef (return newSimulation >>= addSituation "ToF")
+app :: Delay -> IO Middleware
+app delay = do
+    ref <- newIORef (return newSimulation)
     spockCfg <- defaultSpockCfg () PCNoDatabase (AppState ref)
-    _ <- repeatedTimer (repeatedAction ref) (sDelay 10)
+    _ <- repeatedTimer (repeatedAction ref) delay
     spock spockCfg routes
 
 
@@ -55,8 +56,13 @@ routes = do
 
     get ("situations" <//> var) $ \name -> do
         (AppState ref) <- Web.Spock.getState
-        simulation <- liftIO $ readIORef ref
-        json $ simulation >>= Simulation.getState name
+        sim <- liftIO $ readIORef ref
+        let newSim = sim >>= Simulation.getState name
+        let st = case newSim of
+                   Left _ -> status204
+                   Right _ -> status200
+        setStatus st
+        json $ newSim
 
     post ("action" <//> var) $ \name -> do
         command <- jsonBody' :: ApiAction Command
