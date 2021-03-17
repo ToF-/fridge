@@ -48,12 +48,12 @@ repeatedAction ref = do
 
 app :: Api
 app = do
-    get "simulation" $ do
+    get "situations" $ do
         (AppState ref) <- Web.Spock.getState
         simulation <- liftIO $ readIORef ref
         json $ simulation
 
-    get ("situation" <//> var) $ \name -> do
+    get ("situations" <//> var) $ \name -> do
         (AppState ref) <- Web.Spock.getState
         simulation <- liftIO $ readIORef ref
         json $ simulation >>= Simulation.getState name
@@ -74,7 +74,7 @@ app = do
                 result <- liftIO $ atomicModifyIORef' ref $ const (simulation', simulation')
                 json $ result >>= Simulation.getState name
 
-    post "situation" $ do
+    post "situations" $ do
         name <- jsonBody' :: ApiAction Name
         (AppState ref) <- Web.Spock.getState
         simulation <- liftIO $ readIORef ref
