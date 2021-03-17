@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 0863f883f36ebf85c9b18c87c99c8c16537ba8fb256a99f1dfe69e9b3ce13ccc
+-- hash: 23b019ede4fa8ad8b067a547b9257bf4a5e7b04f844866434c1ea0ac908acc5e
 
 name:           fridge
 version:        0.1.0.0
@@ -27,6 +27,7 @@ source-repository head
 
 library
   exposed-modules:
+      Api
       Lib
       Room
       Simulation
@@ -70,6 +71,7 @@ test-suite fridge-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      ApiSpec
       RoomSpec
       SimulationSpec
       SituationSpec
