@@ -33,4 +33,4 @@ spec = do
                         { matchStatus = 201 }
                 post "/situations" "\"Gus\"" `shouldRespondWith`
                     "{\"Left\":\"a situation already exists with name:Gus\"}"
-                        { matchStatus = 201 }
+                        { matchStatus = 204 }

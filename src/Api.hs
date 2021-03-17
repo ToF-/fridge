@@ -89,7 +89,7 @@ routes = do
         let newSim = sim >>= addSituation name
         case newSim of
             Left _ -> do
-                setStatus status201
+                setStatus status204
                 json $ newSim
             Right _ -> do
                 result <- liftIO $ atomicModifyIORef' ref $ const (newSim, newSim)
