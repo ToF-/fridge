@@ -28,6 +28,7 @@ dependencies:
 - containers
 - timers
 - suspend
+- wai
 
 library:
   source-dirs: src
@@ -63,3 +64,4 @@ tests:
     dependencies:
     - fridge
     - hspec
+    - hspec-wai

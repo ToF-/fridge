@@ -6,12 +6,16 @@ module Api where
 import           Situation
 import           Simulation
 import           Web.Spock
+import           Web.Spock.Config
 import           Data.IORef
 
 import           Data.Aeson       hiding (json)
 import           GHC.Generics
 
+import           Control.Concurrent.Suspend
+import           Control.Concurrent.Timer
 import           Control.Monad.Trans (liftIO)
+import           Network.Wai (Middleware)
 
 data AppState = AppState (IORef (Either String Simulation))
 
@@ -27,9 +31,23 @@ data Action = Action Command Name
 type Api = SpockM () () AppState ()
 type ApiAction a = SpockAction () () AppState a
 
+repeatedAction :: IORef (Either String Simulation) -> IO ()
+repeatedAction ref = do
+    simulation <- readIORef ref
+    let simulation' = simulation >>= applyAll tick
+    _ <- atomicModifyIORef' ref $ const (simulation',simulation')
+    return ()
 
-app :: Api
+app :: IO Middleware
 app = do
+    ref <- newIORef (return newSimulation >>= addSituation "ToF")
+    spockCfg <- defaultSpockCfg () PCNoDatabase (AppState ref)
+    _ <- repeatedTimer (repeatedAction ref) (sDelay 10)
+    spock spockCfg routes
+
+
+routes :: Api
+routes = do
     get "situations" $ do
         (AppState ref) <- Web.Spock.getState
         simulation <- liftIO $ readIORef ref

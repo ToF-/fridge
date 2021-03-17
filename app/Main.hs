@@ -16,21 +16,10 @@ import           Data.Text        (Text, pack)
 import           GHC.Generics
 import           Control.Concurrent.Suspend
 import           Control.Concurrent.Timer
-
+import           Network.Wai (Middleware)
 import           Control.Monad.Trans (liftIO)
 
 
 main :: IO ()
-main = do
-    ref <- newIORef (return newSimulation >>= addSituation "ToF")
-    spockCfg <- defaultSpockCfg () PCNoDatabase (AppState ref)
-    repeatedTimer (repeatedAction ref) (sDelay 10)
-    runSpock 8080 (spock spockCfg app)
-
-repeatedAction :: IORef (Either String Simulation) -> IO ()
-repeatedAction ref = do
-    simulation <- readIORef ref
-    let simulation' = simulation >>= applyAll tick
-    atomicModifyIORef' ref $ const (simulation',simulation')
-    return ()
+main = runSpock 8080 app
 
