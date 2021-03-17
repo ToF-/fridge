@@ -62,7 +62,7 @@ spec = do
                     "{\"Right\":[\"Halted\",15.0,100]}"
                         { matchStatus = 202 }
 
-            it "serves a Right value when changing a cursor position in situation" $ do
+            it "serves a Right value when changing a cursor position in a started situation" $ do
                 post "/situations" "\"Gus\"" `shouldRespondWith`
                     "{\"Right\":[\"Halted\",15.0,100]}"
                         { matchStatus = 201 }
@@ -72,3 +72,11 @@ spec = do
                 post "/situations/Gus" "{\"tag\":\"Change\", \"contents\":42 }" `shouldRespondWith`
                     "{\"Right\":[\"Started\",15.0,42]}"
                         { matchStatus = 202 }
+
+            it "serves a Left value when changing a cursor position in a halted situation" $ do
+                post "/situations" "\"Gus\"" `shouldRespondWith`
+                    "{\"Right\":[\"Halted\",15.0,100]}"
+                        { matchStatus = 201 }
+                post "/situations/Gus" "{\"tag\":\"Change\", \"contents\":42 }" `shouldRespondWith`
+                    "{\"Left\":\"situation for Gus is not started\"}"
+                        { matchStatus = 400 }
