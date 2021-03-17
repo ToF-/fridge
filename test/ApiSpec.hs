@@ -26,7 +26,11 @@ spec = do
                 post "/situations" "\"Gus\"" `shouldRespondWith`
                     "{\"Right\":[\"Halted\",15.0,100]}"
                         { matchStatus = 201 }
+                get "/situations/Gus" `shouldRespondWith` 
+                    "{\"Right\":[\"Halted\",15.0,100]}"
+                        { matchStatus = 200 }
 
+        describe "POST /situations" $ do
             it "serves a Left value when creating an already  existing situation" $ do
                 post "/situations" "\"Gus\"" `shouldRespondWith`
                     "{\"Right\":[\"Halted\",15.0,100]}"
