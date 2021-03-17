@@ -22,5 +22,15 @@ spec = do
                     "{\"Left\":\"no situation exists with name:Ben\"}"
                         { matchStatus = 204 }
 
+            it "serves a Right value when creating a new situation" $ do
+                post "/situations" "\"Gus\"" `shouldRespondWith`
+                    "{\"Right\":[\"Halted\",15.0,100]}"
+                        { matchStatus = 201 }
 
-
+            it "serves a Left value when creating an already  existing situation" $ do
+                post "/situations" "\"Gus\"" `shouldRespondWith`
+                    "{\"Right\":[\"Halted\",15.0,100]}"
+                        { matchStatus = 201 }
+                post "/situations" "\"Gus\"" `shouldRespondWith`
+                    "{\"Left\":\"a situation already exists with name:Gus\"}"
+                        { matchStatus = 201 }

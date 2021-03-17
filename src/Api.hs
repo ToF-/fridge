@@ -57,7 +57,7 @@ routes = do
     get ("situations" <//> var) $ \name -> do
         (AppState ref) <- Web.Spock.getState
         sim <- liftIO $ readIORef ref
-        let newSim = sim >>= Simulation.getState name
+        let newSim = sim >>= getSimulationState name
         let st = case newSim of
                    Left _ -> status204
                    Right _ -> status200
@@ -72,22 +72,27 @@ routes = do
                   Reset -> apply reset
                   (Change n) -> (changeSituation n)
         (AppState ref) <- Web.Spock.getState
-        simulation <- liftIO $ readIORef ref
-        let simulation' = simulation >>= f name
-        case simulation' of
-            Left _ -> json $ simulation'
+        sim <- liftIO $ readIORef ref
+        let newSim = sim >>= f name
+        case newSim of
+            Left _ -> do
+                setStatus status400
+                json $ newSim
             Right _ -> do
-                result <- liftIO $ atomicModifyIORef' ref $ const (simulation', simulation')
-                json $ result >>= Simulation.getState name
+                result <- liftIO $ atomicModifyIORef' ref $ const (newSim, newSim)
+                json $ result >>= getSimulationState name
 
     post "situations" $ do
         name <- jsonBody' :: ApiAction Name
         (AppState ref) <- Web.Spock.getState
-        simulation <- liftIO $ readIORef ref
-        let simulation' = simulation >>= addSituation name
-        case simulation' of
-            Left _ -> json $ simulation'
+        sim <- liftIO $ readIORef ref
+        let newSim = sim >>= addSituation name
+        case newSim of
+            Left _ -> do
+                setStatus status201
+                json $ newSim
             Right _ -> do
-                result <- liftIO $ atomicModifyIORef' ref $ const (simulation', simulation')
-                json $ result >>= Simulation.getState name
+                result <- liftIO $ atomicModifyIORef' ref $ const (newSim, newSim)
+                setStatus status201
+                json $ result >>= getSimulationState name
 
