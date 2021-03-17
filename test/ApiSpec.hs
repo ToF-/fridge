@@ -5,8 +5,10 @@ module ApiSpec
 
 import Test.Hspec
 import Test.Hspec.Wai
+import Control.Concurrent
 import           Control.Concurrent.Suspend
 import Web.Spock (spockAsApp)
+
 import Api
 
 spec :: Spec
@@ -94,3 +96,17 @@ spec = do
                 post "/situations/Gus" "{\"tag\":\"Reset\"}" `shouldRespondWith`
                     "{\"Right\":[\"Halted\",15.0,100]}"
                         { matchStatus = 202 }
+
+    with (spockAsApp (app (sDelay 1))) $ do
+        describe "timer" $ do
+            it "changes a started situation temperature every x seconds" $ do
+                post "/situations" "\"Gus\"" `shouldRespondWith`
+                    "{\"Right\":[\"Halted\",15.0,100]}"
+                        { matchStatus = 201 }
+                post "/situations/Gus" "{\"tag\":\"Start\"}" `shouldRespondWith`
+                    "{\"Right\":[\"Started\",15.0,100]}"
+                        { matchStatus = 202 }
+                liftIO $ threadDelay 1000000
+                get "/situations/Gus" `shouldRespondWith` 
+                    "{\"Right\":[\"Started\",14.0,100]}"
+                        { matchStatus = 200 }
