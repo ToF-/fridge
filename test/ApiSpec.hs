@@ -80,3 +80,17 @@ spec = do
                 post "/situations/Gus" "{\"tag\":\"Change\", \"contents\":42 }" `shouldRespondWith`
                     "{\"Left\":\"situation for Gus is not started\"}"
                         { matchStatus = 400 }
+
+            it "serves a Right value when resetting a situation" $ do
+                post "/situations" "\"Gus\"" `shouldRespondWith`
+                    "{\"Right\":[\"Halted\",15.0,100]}"
+                        { matchStatus = 201 }
+                post "/situations/Gus" "{\"tag\":\"Start\"}" `shouldRespondWith`
+                    "{\"Right\":[\"Started\",15.0,100]}"
+                        { matchStatus = 202 }
+                post "/situations/Gus" "{\"tag\":\"Change\", \"contents\":42 }" `shouldRespondWith`
+                    "{\"Right\":[\"Started\",15.0,42]}"
+                        { matchStatus = 202 }
+                post "/situations/Gus" "{\"tag\":\"Reset\"}" `shouldRespondWith`
+                    "{\"Right\":[\"Halted\",15.0,100]}"
+                        { matchStatus = 202 }
