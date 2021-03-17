@@ -64,7 +64,7 @@ routes = do
         setStatus st
         json $ newSim
 
-    post ("action" <//> var) $ \name -> do
+    post ("situations" <//> var) $ \name -> do
         command <- jsonBody' :: ApiAction Command
         let f = case command of
                   Start -> apply start
@@ -80,6 +80,7 @@ routes = do
                 json $ newSim
             Right _ -> do
                 result <- liftIO $ atomicModifyIORef' ref $ const (newSim, newSim)
+                setStatus status202
                 json $ result >>= getSimulationState name
 
     post "situations" $ do

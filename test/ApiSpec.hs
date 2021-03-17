@@ -42,3 +42,13 @@ spec = do
                 post "/situations" "\"Gus\"" `shouldRespondWith`
                     "{\"Left\":\"a situation already exists with name:Gus\"}"
                         { matchStatus = 204 }
+
+            it "serves a Right value when starting a situation" $ do
+                post "/situations" "\"Gus\"" `shouldRespondWith`
+                    "{\"Right\":[\"Halted\",15.0,100]}"
+                        { matchStatus = 201 }
+                post "/situations/Gus" "{\"tag\":\"Start\"}" `shouldRespondWith`
+                    "{\"Right\":[\"Started\",15.0,100]}"
+                        { matchStatus = 202 }
+                    
+
