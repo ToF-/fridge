@@ -7,7 +7,8 @@ import           Situation
 import           Simulation
 import           Web.Spock
 import           Web.Spock.Config
-import           Web.Spock.Lucid
+import           Web.Spock.Lucid (lucid)
+import           Lucid
 import           Data.IORef
 
 import           Data.Aeson       hiding (json)
@@ -50,6 +51,9 @@ app delay = do
 
 routes :: Api
 routes = do
+    get root $ do
+        lucid $ do
+            p_ "hello"
     get "situations" $ do
         (AppState ref) <- Web.Spock.getState
         simulation <- liftIO $ readIORef ref
