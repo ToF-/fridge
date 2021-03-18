@@ -22,6 +22,7 @@ import           Network.Wai (Middleware)
 import Network.HTTP.Types.Status
 import           Control.Monad (forM_)
 import           Data.Map as M
+import Network.Wai.Middleware.Static
 
 data AppState = AppState (IORef (Either String Simulation))
 
@@ -54,10 +55,15 @@ app delay = do
 
 routes :: Api
 routes = do
+    middleware (staticPolicy (addBase "static"))
     get root $ do
         (AppState ref) <- Web.Spock.getState
         simulation <- liftIO $ readIORef ref
         lucid $ do
+            head_ $ link_ [ rel_ "stylesheet"
+                          , type_ "text/css"
+                          , href_ "/css/main.css"
+                          ]
             h1_ "Simulations"
             let (Right (Simulation situations)) = simulation
             ul_ $ forM_ (M.toList situations) $ \sit -> li_ $ do

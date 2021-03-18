@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 202a078bbc0ca30fa973a0ed62475e70e3cf21e13497d8cfb74a341023b88b59
+-- hash: 3b5a56a27a91fce8ffc3ab47406e5533226705402ccfee794af600d1bebd8523
 
 name:           fridge
 version:        0.1.0.0
@@ -50,6 +50,7 @@ library
     , text
     , timers
     , wai
+    , wai-middleware-static
   default-language: Haskell2010
 
 executable fridge-exe
@@ -73,6 +74,7 @@ executable fridge-exe
     , text
     , timers
     , wai
+    , wai-middleware-static
   default-language: Haskell2010
 
 test-suite fridge-test
@@ -103,4 +105,5 @@ test-suite fridge-test
     , text
     , timers
     , wai
+    , wai-middleware-static
   default-language: Haskell2010
