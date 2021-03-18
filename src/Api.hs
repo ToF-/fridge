@@ -7,6 +7,7 @@ import           Situation
 import           Simulation
 import           Web.Spock
 import           Web.Spock.Config
+import           Web.Spock.Lucid
 import           Data.IORef
 
 import           Data.Aeson       hiding (json)

@@ -30,6 +30,7 @@ dependencies:
 - suspend
 - wai
 - http-types
+- Spock-lucid
 
 library:
   source-dirs: src
