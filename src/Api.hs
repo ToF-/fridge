@@ -4,6 +4,7 @@
 module Api where
 
 import           Situation
+import           Room
 import           Simulation
 import           Web.Spock
 import           Web.Spock.Config
@@ -19,6 +20,8 @@ import           Control.Concurrent.Timer
 import           Control.Monad.Trans (liftIO)
 import           Network.Wai (Middleware)
 import Network.HTTP.Types.Status
+import           Control.Monad (forM_)
+import           Data.Map as M
 
 data AppState = AppState (IORef (Either String Simulation))
 
@@ -52,8 +55,17 @@ app delay = do
 routes :: Api
 routes = do
     get root $ do
+        (AppState ref) <- Web.Spock.getState
+        simulation <- liftIO $ readIORef ref
         lucid $ do
-            p_ "hello"
+            h1_ "Simulations"
+            let (Right (Simulation situations)) = simulation
+            ul_ $ forM_ (M.toList situations) $ \sit -> li_ $ do
+                toHtml $ (fst sit) 
+                " "
+                toHtml $ (show (temperature (room (snd sit))))
+                " "
+                toHtml $ (show (cursorPosition (room (snd sit))))
     get "situations" $ do
         (AppState ref) <- Web.Spock.getState
         simulation <- liftIO $ readIORef ref

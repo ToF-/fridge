@@ -1,5 +1,5 @@
 {-# LANGUAGE DeriveGeneric #-}
-module Simulation (Simulation, Name, addSituation, apply, applyAll, changeSituation, getSimulationState, newSimulation)
+module Simulation (Simulation (..), Name, addSituation, apply, applyAll, changeSituation, getSimulationState, newSimulation)
     where
 
 import Room
