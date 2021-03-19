@@ -20,7 +20,7 @@ import Network.Wai.Middleware.Static (addBase, staticPolicy)
 import Room                          (cursorPosition, temperature)
 import Simulation                    (Name, Simulation (..), addSituation, apply, applyAll, changeSituation, getSimulationState, newSimulation)
 import Situation                     (halt, room, reset, start, state, tick)
-import Web.Spock                     (SpockM, SpockAction, json, jsonBody', get, getState, middleware, post, root, setStatus, spock, var, (<//>))
+import Web.Spock                     (SpockM, SpockAction, json, jsonBody', get, getState, middleware, param', post, redirect, root, setStatus, spock, var, (<//>))
 import Web.Spock.Config              (defaultSpockCfg, PoolOrConn(PCNoDatabase))
 import Web.Spock.Lucid               (lucid)
 
@@ -69,6 +69,7 @@ routes delay = do
                 meta_ [httpEquiv_ "Refresh", content_ refresh]
             h1_ "Simulations"
             let (Right (Simulation situations)) = simulation
+            h2_ "situations"
             div_ [class_ "simulations"] $ do
                 forM_ (M.toList situations) $ \sit -> 
                     div_ [class_ "simulation"] $ do
@@ -80,6 +81,26 @@ routes delay = do
                             toHtml $ (show (cursorPosition (room (snd sit))))
                         div_ [class_ "simulation_state"] $ do
                             toHtml $ (show (state (snd sit)))
+            h2_ "new situation"
+            form_ [method_ "post", class_ "situation_input"] $ do
+                div_ [class_ "situation_input"] $ do
+                    label_ "Name: "
+                    input_ [name_ "name"]
+                div_ [class_ "situation_input"] $ do
+                    input_ [type_ "submit", value_ "Create Situation"]
+
+    post root $ do
+        name <- param' "name"
+        (AppState ref) <- Web.Spock.getState
+        sim <- liftIO $ readIORef ref
+        let newSim = sim >>= addSituation name
+        _ <- case newSim of
+            Left msg -> do
+                lucid $ do div_ $ toHtml msg
+            Right _ -> do
+                _ <- liftIO $ atomicModifyIORef' ref $ const (newSim, newSim)
+                lucid $ do div_ $ toHtml (name ++ " created")
+        redirect "/"
     get "situations" $ do
         (AppState ref) <- Web.Spock.getState
         simulation <- liftIO $ readIORef ref

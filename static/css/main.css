@@ -24,3 +24,10 @@ div.name, div.temperature, div.cursor_position {
     width: 120px;
 }
 
+form.situation-input {
+    display: table;
+}
+
+div.situation-input {
+    display: table-row;
+}
