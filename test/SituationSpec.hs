@@ -3,10 +3,10 @@
 module SituationSpec
     where
 
-import Test.Hspec
-import Situation
-import Room
 import Data.Aeson
+import Room
+import Situation
+import Test.Hspec
 
 spec :: SpecWith ()
 spec = do
@@ -43,6 +43,11 @@ spec = do
             state s `shouldBe` Halted
             length (history s) `shouldBe` 1
             temperature (room s) `shouldBe` 15.0
+
+        it "has a view that present state, temperature (rounded) and cursor position" $ do
+            let s = tick (tick (tick (tick (tick (tick (start newSituation))))))
+            view s  `shouldBe` (Started, 9.3, 100)
+
 
         it "can be encoded into json" $ do
             encode newSituation `shouldBe`
