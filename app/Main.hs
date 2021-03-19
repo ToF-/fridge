@@ -18,7 +18,13 @@ import           Control.Concurrent.Suspend
 import           Control.Concurrent.Timer
 import           Network.Wai (Middleware)
 import           Control.Monad.Trans (liftIO)
-
+import           System.Environment
 
 main :: IO ()
-main = runSpock 8080 (app (sDelay 60))
+main = do
+    args <- getArgs
+    let n = case args of
+              [] -> 60
+              (s:_) -> read s
+    putStrLn $ "refresh every " ++ show n ++ " seconds"
+    runSpock 8080 (app n)

@@ -10,3 +10,17 @@ h1 {
   text-align: center;
 }
 
+div.simulations {
+    display: table;
+}
+
+div.simulation {
+    display: table-row;
+}
+
+div.name, div.temperature, div.cursor_position {
+    display: table-cell;
+    padding: 5px 15px;
+    width: 120px;
+}
+

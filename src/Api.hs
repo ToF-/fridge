@@ -23,6 +23,8 @@ import Network.HTTP.Types.Status
 import           Control.Monad (forM_)
 import           Data.Map as M
 import Network.Wai.Middleware.Static
+import Data.String
+import GHC.Int
 
 data AppState = AppState (IORef (Either String Simulation))
 
@@ -45,33 +47,41 @@ repeatedAction ref = do
     _ <- atomicModifyIORef' ref $ const (simulation',simulation')
     return ()
 
-app :: Delay -> IO Middleware
+app :: GHC.Int.Int64 -> IO Middleware
 app delay = do
     ref <- newIORef (return newSimulation)
     spockCfg <- defaultSpockCfg () PCNoDatabase (AppState ref)
-    _ <- repeatedTimer (repeatedAction ref) delay
-    spock spockCfg routes
+    _ <- repeatedTimer (repeatedAction ref) (sDelay delay)
+    spock spockCfg (routes delay)
 
 
-routes :: Api
-routes = do
+routes :: GHC.Int.Int64 -> Api
+routes delay = do
+    let refresh = fromString $ show delay
     middleware (staticPolicy (addBase "static"))
     get root $ do
         (AppState ref) <- Web.Spock.getState
         simulation <- liftIO $ readIORef ref
         lucid $ do
-            head_ $ link_ [ rel_ "stylesheet"
-                          , type_ "text/css"
-                          , href_ "/css/main.css"
-                          ]
+            head_ $ do
+                link_ [ rel_ "stylesheet"
+                      , type_ "text/css"
+                      , href_ "/css/main.css"
+                      ]
+                meta_ [httpEquiv_ "Refresh", content_ refresh]
             h1_ "Simulations"
             let (Right (Simulation situations)) = simulation
-            ul_ $ forM_ (M.toList situations) $ \sit -> li_ $ do
-                toHtml $ (fst sit) 
-                " "
-                toHtml $ (show (temperature (room (snd sit))))
-                " "
-                toHtml $ (show (cursorPosition (room (snd sit))))
+            div_ [class_ "simulations"] $ do
+                forM_ (M.toList situations) $ \sit -> 
+                    div_ [class_ "simulation"] $ do
+                        div_ [class_ "name"] $ do
+                            toHtml $ (fst sit)
+                        div_ [class_ "temperature"] $ do
+                            toHtml $ (show (temperature (room (snd sit))))
+                        div_ [class_ "cursor_position"] $ do
+                            toHtml $ (show (cursorPosition (room (snd sit))))
+                        div_ [class_ "simulation_state"] $ do
+                            toHtml $ (show (state (snd sit)))
     get "situations" $ do
         (AppState ref) <- Web.Spock.getState
         simulation <- liftIO $ readIORef ref
