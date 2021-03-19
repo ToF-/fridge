@@ -15,7 +15,7 @@ spec = do
             message server `shouldBe` ""
             simulation server `shouldBe` newSimulation
 
-        it "returns a 204 when queried for an non exsiting name" $ do
+        it "returns a 204 when queried for an non existing name" $ do
             let server = getSituation "ToF" newServer
             status server  `shouldBe` status204
             message server `shouldBe` "no situation exists with name:ToF"
