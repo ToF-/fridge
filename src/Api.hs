@@ -95,12 +95,12 @@ routes delay = do
         sim <- liftIO $ readIORef ref
         let newSim = sim >>= addSituation name
         _ <- case newSim of
-            Left msg -> do
-                lucid $ do div_ $ toHtml msg
+            Left s -> return s
             Right _ -> do
                 _ <- liftIO $ atomicModifyIORef' ref $ const (newSim, newSim)
-                lucid $ do div_ $ toHtml (name ++ " created")
-        redirect "/"
+                return $ "Situation for " ++ name ++ " created."
+        redirect $  "/"
+
     get "situations" $ do
         (AppState ref) <- Web.Spock.getState
         simulation <- liftIO $ readIORef ref

@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 3b5a56a27a91fce8ffc3ab47406e5533226705402ccfee794af600d1bebd8523
+-- hash: 7ed6589c18e66ba7d284d9f538860070c514a4f514424a51d59c1da4cf0686c8
 
 name:           fridge
 version:        0.1.0.0
@@ -30,6 +30,7 @@ library
       Api
       Lib
       Room
+      Server
       Simulation
       Situation
   other-modules:
@@ -83,6 +84,7 @@ test-suite fridge-test
   other-modules:
       ApiSpec
       RoomSpec
+      ServerSpec
       SimulationSpec
       SituationSpec
       Paths_fridge
