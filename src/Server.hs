@@ -16,8 +16,16 @@ newServer = Server status200 "" newSimulation Nothing
 getSituation :: Name -> Server -> Server
 getSituation name server = 
     let sim = simulation server
-        result = getSimulationState name sim
+        result = situationState name sim
     in case result of 
          Right state -> Server status200 "" sim (Just state)
          Left msg ->    Server status204 msg sim Nothing
+
+postSituation :: Name -> Server -> Server
+postSituation name server = 
+    let sim = simulation server
+        result = addSituation name sim >>= situationState name
+    in case result of
+         Right state -> Server status200 "" sim (Just state)
+         Left msg -> Server status201 msg sim Nothing
 

@@ -21,5 +21,3 @@ spec = do
             message server `shouldBe` "no situation exists with name:ToF"
             simulation_state server `shouldBe` Nothing
 
-        
-             

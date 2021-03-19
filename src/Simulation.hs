@@ -1,5 +1,5 @@
 {-# LANGUAGE DeriveGeneric #-}
-module Simulation (Simulation (..), SimulationState, Name, addSituation, apply, applyAll, changeSituation, getSimulationState, newSimulation)
+module Simulation (Simulation (..), SimulationState, Name, addSituation, apply, applyAll, changeSituation, situationState, newSimulation)
     where
 
 import Room
@@ -20,8 +20,8 @@ instance ToJSON Simulation
 newSimulation :: Simulation
 newSimulation = Simulation (M.empty)
 
-getSimulationState :: Name -> Simulation -> Either String SimulationState
-getSimulationState name s = return s >>= checkName name 
+situationState :: Name -> Simulation -> Either String SimulationState
+situationState name s = return s >>= checkName name 
     >>= (\(Simulation ss) -> let sit = fromJust (M.lookup name ss) in Right (state sit, temperature (room sit), cursorPosition (room sit)))
 
 addSituation :: Name -> Simulation -> Either String Simulation
