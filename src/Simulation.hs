@@ -1,5 +1,13 @@
 {-# LANGUAGE DeriveGeneric #-}
-module Simulation (Simulation (..), SimulationState, Name, addSituation, apply, applyAll, changeSituation, situationState, newSimulation)
+module Simulation ( Simulation (..)
+                  , SimulationState
+                  , Name
+                  , addSituationForName
+                  , apply
+                  , applyAll
+                  , changeSituation
+                  , newSimulation
+                  , stateForName)
     where
 
 import Room
@@ -20,12 +28,12 @@ instance ToJSON Simulation
 newSimulation :: Simulation
 newSimulation = Simulation (M.empty)
 
-situationState :: Name -> Simulation -> Either String SimulationState
-situationState name s = return s >>= checkName name 
+stateForName :: Name -> Simulation -> Either String SimulationState
+stateForName name s = return s >>= checkName name 
     >>= (\(Simulation ss) -> let sit = fromJust (M.lookup name ss) in Right (state sit, temperature (room sit), cursorPosition (room sit)))
 
-addSituation :: Name -> Simulation -> Either String Simulation
-addSituation name (Simulation ss) = case M.lookup name ss of
+addSituationForName :: Name -> Simulation -> Either String Simulation
+addSituationForName name (Simulation ss) = case M.lookup name ss of
                                       Nothing -> Right (Simulation (M.insert name newSituation ss))
                                       Just _ -> Left ("a situation already exists with name:" ++ name)
 

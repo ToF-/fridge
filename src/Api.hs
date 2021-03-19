@@ -18,7 +18,7 @@ import Network.HTTP.Types.Status     (status200, status201, status202, status204
 import Network.Wai                   (Middleware)
 import Network.Wai.Middleware.Static (addBase, staticPolicy)
 import Room                          (cursorPosition, temperature)
-import Simulation                    (Name, Simulation (..), addSituation, apply, applyAll, changeSituation, situationState, newSimulation)
+import Simulation                    (Name, Simulation (..), addSituationForName, apply, applyAll, changeSituation, stateForName, newSimulation)
 import Situation                     (halt, room, reset, start, state, tick)
 import Web.Spock                     (SpockM, SpockAction, json, jsonBody', get, getState, middleware, param', post, redirect, root, setStatus, spock, var, (<//>))
 import Web.Spock.Config              (defaultSpockCfg, PoolOrConn(PCNoDatabase))
@@ -93,7 +93,7 @@ routes delay = do
         name <- param' "name"
         (AppState ref) <- Web.Spock.getState
         sim <- liftIO $ readIORef ref
-        let newSim = sim >>= addSituation name
+        let newSim = sim >>= addSituationForName name
         _ <- case newSim of
             Left s -> return s
             Right _ -> do
@@ -109,7 +109,7 @@ routes delay = do
     get ("situations" <//> var) $ \name -> do
         (AppState ref) <- Web.Spock.getState
         sim <- liftIO $ readIORef ref
-        let newSim = sim >>= situationState name
+        let newSim = sim >>= stateForName name
         let st = case newSim of
                    Left _ -> status204
                    Right _ -> status200
@@ -133,13 +133,13 @@ routes delay = do
             Right _ -> do
                 result <- liftIO $ atomicModifyIORef' ref $ const (newSim, newSim)
                 setStatus status202
-                json $ result >>= situationState name
+                json $ result >>= stateForName name
 
     post "situations" $ do
         name <- jsonBody' :: ApiAction Name
         (AppState ref) <- Web.Spock.getState
         sim <- liftIO $ readIORef ref
-        let newSim = sim >>= addSituation name
+        let newSim = sim >>= addSituationForName name
         case newSim of
             Left _ -> do
                 setStatus status204
@@ -147,5 +147,5 @@ routes delay = do
             Right _ -> do
                 result <- liftIO $ atomicModifyIORef' ref $ const (newSim, newSim)
                 setStatus status201
-                json $ result >>= situationState name
+                json $ result >>= stateForName name
 
