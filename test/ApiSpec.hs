@@ -6,14 +6,13 @@ module ApiSpec
 import Test.Hspec
 import Test.Hspec.Wai
 import Control.Concurrent
-import           Control.Concurrent.Suspend
 import Web.Spock (spockAsApp)
 
 import Api
 
 spec :: Spec
 spec = do
-    with (spockAsApp (app (sDelay 60))) $ do
+    with (spockAsApp (app 60)) $ do
         describe "GET /situations" $ do
             it "serves the situations, initially empty" $ do
                 get "/situations" `shouldRespondWith` 
@@ -97,7 +96,7 @@ spec = do
                     "{\"Right\":[\"Halted\",15.0,100]}"
                         { matchStatus = 202 }
 
-    with (spockAsApp (app (sDelay 1))) $ do
+    with (spockAsApp (app 1)) $ do
         describe "timer" $ do
             it "changes a started situation temperature every x seconds" $ do
                 post "/situations" "\"Gus\"" `shouldRespondWith`

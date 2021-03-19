@@ -3,28 +3,26 @@
 
 module Api where
 
-import           Situation
-import           Room
-import           Simulation
-import           Web.Spock
-import           Web.Spock.Config
-import           Web.Spock.Lucid (lucid)
-import           Lucid
-import           Data.IORef
-
-import           Data.Aeson       hiding (json)
-import           GHC.Generics
-
-import           Control.Concurrent.Suspend
-import           Control.Concurrent.Timer
-import           Control.Monad.Trans (liftIO)
-import           Network.Wai (Middleware)
-import Network.HTTP.Types.Status
-import           Control.Monad (forM_)
-import           Data.Map as M
-import Network.Wai.Middleware.Static
-import Data.String
+import Control.Concurrent.Suspend    (sDelay)
+import Control.Concurrent.Timer      (repeatedTimer)
+import Control.Monad                 (forM_)
+import Control.Monad.Trans           (liftIO)
+import Data.Aeson hiding (json)
+import Data.IORef                    (IORef, atomicModifyIORef', newIORef, readIORef)
+import Data.Map as M                 (toList)
+import Data.String                   (fromString)
+import GHC.Generics                  (Generic)
 import GHC.Int
+import Lucid
+import Network.HTTP.Types.Status     (status200, status201, status202, status204, status400)
+import Network.Wai                   (Middleware)
+import Network.Wai.Middleware.Static (addBase, staticPolicy)
+import Room                          (cursorPosition, temperature)
+import Simulation                    (Name, Simulation (..), addSituation, apply, applyAll, changeSituation, getSimulationState, newSimulation)
+import Situation                     (halt, room, reset, start, state, tick)
+import Web.Spock                     (SpockM, SpockAction, json, jsonBody', get, getState, middleware, post, root, setStatus, spock, var, (<//>))
+import Web.Spock.Config              (defaultSpockCfg, PoolOrConn(PCNoDatabase))
+import Web.Spock.Lucid               (lucid)
 
 data AppState = AppState (IORef (Either String Simulation))
 
