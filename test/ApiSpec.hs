@@ -16,7 +16,7 @@ spec = do
         describe "GET /situations" $ do
             it "serves the situations, initially empty" $ do
                 get "/situations" `shouldRespondWith` 
-                    "{\"Right\":{}}" { matchStatus = 200 }
+                    "{\"Right\":{\"situations\":{}}}" { matchStatus = 200 }
 
             it "serves a Left value when queried for non existing situation" $ do
                 get "/situations/Ben" `shouldRespondWith` 

@@ -1,5 +1,6 @@
 {-# LANGUAGE DeriveGeneric #-}
-module Situation (Situation
+module Situation ( Situation
+                 , SituationView
                  , State (..)
                  , change
                  , halt

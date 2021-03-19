@@ -7,19 +7,20 @@ module Simulation ( Simulation (..)
                   , applyAll
                   , changeSituation
                   , newSimulation
-                  , stateForName)
+                  , viewForName)
     where
 
+import Control.FromSum (maybeToEither)
+import Data.Aeson
+import Data.Map as M
+import Data.Maybe (fromJust)
+import GHC.Generics
 import Room
 import Situation
-import Data.Maybe (fromJust)
-import Data.Map as M
-import GHC.Generics
-import Data.Aeson
 
 
 type Name = String
-data Simulation = Simulation (Map Name Situation)
+data Simulation = Simulation { situations :: Map Name Situation }
     deriving (Generic, Eq, Show)
 
 type SimulationState = (State, Temperature, CursorPosition)
@@ -28,14 +29,24 @@ instance ToJSON Simulation
 newSimulation :: Simulation
 newSimulation = Simulation (M.empty)
 
-stateForName :: Name -> Simulation -> Either String SimulationState
-stateForName name s = return s >>= checkName name 
-    >>= (\(Simulation ss) -> let sit = fromJust (M.lookup name ss) in Right (state sit, temperature (room sit), cursorPosition (room sit)))
+viewForName :: Name -> Simulation -> Either String SituationView
+viewForName name simulation = view <$> situation
+    where
+        situation = maybeToEither message (name ?? simulation)
+        message   = "no situation exists with name:" ++ name
 
 addSituationForName :: Name -> Simulation -> Either String Simulation
-addSituationForName name (Simulation ss) = case M.lookup name ss of
-                                      Nothing -> Right (Simulation (M.insert name newSituation ss))
-                                      Just _ -> Left ("a situation already exists with name:" ++ name)
+addSituationForName name simulation = 
+    case (name ?? simulation) of
+      Nothing -> pure (name !> simulation)
+      Just _  -> Left ("a situation already exists with name:" ++ name)
+
+(??) :: Name -> Simulation -> Maybe Situation
+name ?? simulation = M.lookup name (situations simulation) 
+
+(!>) :: Name -> Simulation -> Simulation
+name !> simulation = Simulation situations'
+    where situations' = M.insert name newSituation (situations simulation)
 
 checkName :: Name -> Simulation -> Either String Simulation
 checkName name (Simulation ss) = case M.lookup name ss of

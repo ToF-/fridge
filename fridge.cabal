@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 7ed6589c18e66ba7d284d9f538860070c514a4f514424a51d59c1da4cf0686c8
+-- hash: e485d9877ac7243830f024db37272fefbd103048867d907bd183333e0bb2fb25
 
 name:           fridge
 version:        0.1.0.0
@@ -44,6 +44,7 @@ library
     , aeson
     , base >=4.7 && <5
     , containers
+    , from-sum
     , http-types
     , lucid
     , mtl
@@ -68,6 +69,7 @@ executable fridge-exe
     , base >=4.7 && <5
     , containers
     , fridge
+    , from-sum
     , http-types
     , lucid
     , mtl
@@ -98,6 +100,7 @@ test-suite fridge-test
     , base >=4.7 && <5
     , containers
     , fridge
+    , from-sum
     , hspec
     , hspec-wai
     , http-types

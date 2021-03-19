@@ -18,7 +18,7 @@ import Network.HTTP.Types.Status     (status200, status201, status202, status204
 import Network.Wai                   (Middleware)
 import Network.Wai.Middleware.Static (addBase, staticPolicy)
 import Room                          (cursorPosition, temperature)
-import Simulation                    (Name, Simulation (..), addSituationForName, apply, applyAll, changeSituation, stateForName, newSimulation)
+import Simulation                    (Name, Simulation (..), addSituationForName, apply, applyAll, changeSituation, viewForName, newSimulation)
 import Situation                     (halt, room, reset, start, state, tick)
 import Web.Spock                     (SpockM, SpockAction, json, jsonBody', get, getState, middleware, param', post, redirect, root, setStatus, spock, var, (<//>))
 import Web.Spock.Config              (defaultSpockCfg, PoolOrConn(PCNoDatabase))
@@ -68,10 +68,10 @@ routes delay = do
                       ]
                 meta_ [httpEquiv_ "Refresh", content_ refresh]
             h1_ "Simulations"
-            let (Right (Simulation situations)) = simulation
+            let (Right (Simulation sits)) = simulation
             h2_ "situations"
             div_ [class_ "simulations"] $ do
-                forM_ (M.toList situations) $ \sit -> 
+                forM_ (M.toList sits) $ \sit -> 
                     div_ [class_ "simulation"] $ do
                         div_ [class_ "name"] $ do
                             toHtml $ (fst sit)
@@ -109,7 +109,7 @@ routes delay = do
     get ("situations" <//> var) $ \name -> do
         (AppState ref) <- Web.Spock.getState
         sim <- liftIO $ readIORef ref
-        let newSim = sim >>= stateForName name
+        let newSim = sim >>= viewForName name
         let st = case newSim of
                    Left _ -> status204
                    Right _ -> status200
@@ -133,7 +133,7 @@ routes delay = do
             Right _ -> do
                 result <- liftIO $ atomicModifyIORef' ref $ const (newSim, newSim)
                 setStatus status202
-                json $ result >>= stateForName name
+                json $ result >>= viewForName name
 
     post "situations" $ do
         name <- jsonBody' :: ApiAction Name
@@ -147,5 +147,5 @@ routes delay = do
             Right _ -> do
                 result <- liftIO $ atomicModifyIORef' ref $ const (newSim, newSim)
                 setStatus status201
-                json $ result >>= stateForName name
+                json $ result >>= viewForName name
 

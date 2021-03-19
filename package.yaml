@@ -33,6 +33,7 @@ dependencies:
 - Spock-lucid
 - lucid
 - wai-middleware-static
+- from-sum
 
 library:
   source-dirs: src
