@@ -4,17 +4,17 @@ module SimulationSpec
     where
 
 import Test.Hspec
-import Situation hiding (change)
+import Situation hiding (change, new)
 import Simulation
 import Data.Aeson
 
 spec :: SpecWith ()
 spec = do
     let tof = "ToF"
-        simWith name = pure newSimulation >>= add name
+        simWith name = pure new >>= add name
     describe "A simulation" $ do
         it "is initially empty" $ do
-            let v = pure newSimulation
+            let v = pure new
                   >>= viewForName tof
             v `shouldBe` Left "no situation exists with name:ToF"
 

@@ -13,7 +13,7 @@ spec = do
             let server = newServer
             status server `shouldBe` status200
             message server `shouldBe` ""
-            simulation server `shouldBe` newSimulation
+            simulation server `shouldBe` new
 
         it "returns a 204 when queried for an non existing name" $ do
             let server = getSituation "ToF" newServer

@@ -11,7 +11,7 @@ data Server = Server { status :: Status,
                        simulation_state :: Maybe SimulationState }
 
 newServer :: Server
-newServer = Server status200 "" newSimulation Nothing
+newServer = Server status200 "" new Nothing
 
 getSituation :: Name -> Server -> Server
 getSituation name server = 

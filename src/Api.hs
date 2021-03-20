@@ -18,7 +18,7 @@ import Network.HTTP.Types.Status     (status200, status201, status202, status204
 import Network.Wai                   (Middleware)
 import Network.Wai.Middleware.Static (addBase, staticPolicy)
 import Room                          (cursorPosition, temperature)
-import Simulation                    (Name, Simulation (..), add, apply, applyAll, change, viewForName, newSimulation)
+import Simulation                    (Name, Simulation (..), add, apply, applyAll, change, viewForName, new)
 import Situation                     (evolve, halt, room, reset, start, state)
 import Web.Spock                     (SpockM, SpockAction, json, jsonBody', get, getState, middleware, param', post, redirect, root, setStatus, spock, var, (<//>))
 import Web.Spock.Config              (defaultSpockCfg, PoolOrConn(PCNoDatabase))
@@ -47,7 +47,7 @@ repeatedAction ref = do
 
 app :: GHC.Int.Int64 -> IO Middleware
 app delay = do
-    ref <- newIORef (return newSimulation)
+    ref <- newIORef (return new)
     spockCfg <- defaultSpockCfg () PCNoDatabase (AppState ref)
     _ <- repeatedTimer (repeatedAction ref) (sDelay delay)
     spock spockCfg (routes delay)

@@ -6,7 +6,7 @@ module Situation ( Situation
                  , Situation.evolve
                  , halt
                  , history
-                 , newSituation
+                 , new
                  , reset
                  , room
                  , start
@@ -37,8 +37,8 @@ room = head . rooms
 history :: Situation -> [Room]
 history = reverse . rooms
 
-newSituation :: Situation
-newSituation = Situation { rooms = [newRoom], state = Halted }
+new :: Situation
+new = Situation { rooms = [newRoom], state = Halted }
 
 start :: Situation -> Situation
 start situation = situation { state = Started }
@@ -52,7 +52,7 @@ halt :: Situation -> Situation
 halt situation = situation { state = Halted }
 
 reset :: Situation -> Situation
-reset = const newSituation
+reset = const new
 
 change :: CursorPosition -> Situation -> Situation
 change _ situation | state situation == Halted = situation

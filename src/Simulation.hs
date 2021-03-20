@@ -6,7 +6,7 @@ module Simulation ( Simulation (..)
                   , apply
                   , applyAll
                   , Simulation.change
-                  , newSimulation
+                  , Simulation.new
                   , viewForName)
     where
 
@@ -26,8 +26,8 @@ data Simulation = Simulation { situations :: Map Name Situation }
 type SimulationState = (State, Temperature, CursorPosition)
 instance ToJSON Simulation
 
-newSimulation :: Simulation
-newSimulation = Simulation (M.empty)
+new :: Simulation
+new = Simulation (M.empty)
 
 viewForName :: Name -> Simulation -> Either String SituationView
 viewForName name simulation = view <$> situation
@@ -46,7 +46,7 @@ name ?? simulation = M.lookup name (situations simulation)
 
 (!>) :: Name -> Simulation -> Simulation
 name !> simulation = Simulation situations'
-    where situations' = M.insert name newSituation (situations simulation)
+    where situations' = M.insert name Situation.new (situations simulation)
 
 checkName :: Name -> Simulation -> Either String Simulation
 checkName name (Simulation ss) = case M.lookup name ss of
