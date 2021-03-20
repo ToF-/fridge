@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module ApiSpec
+module ServerSpec
     where
 
 import Test.Hspec
@@ -8,7 +8,7 @@ import Test.Hspec.Wai
 import Control.Concurrent
 import Web.Spock (spockAsApp)
 
-import Api
+import Server
 
 spec :: Spec
 spec = do

@@ -1,7 +1,7 @@
 {-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Api where
+module Server where
 
 import Control.Concurrent.Suspend    (sDelay)
 import Control.Concurrent.Timer      (repeatedTimer)
@@ -35,8 +35,8 @@ instance FromJSON Command
 data Action = Action Command Name
     deriving (Eq, Show, Generic)
 
-type Api = SpockM () () AppState ()
-type ApiAction a = SpockAction () () AppState a
+type Server = SpockM () () AppState ()
+type ServerAction a = SpockAction () () AppState a
 
 repeatedAction :: IORef (Either String Simulation) -> IO ()
 repeatedAction ref = do
@@ -53,7 +53,7 @@ app delay = do
     spock spockCfg (routes delay)
 
 
-routes :: GHC.Int.Int64 -> Api
+routes :: GHC.Int.Int64 -> Server
 routes delay = do
     let refresh = fromString $ show delay
     middleware (staticPolicy (addBase "static"))
@@ -117,7 +117,7 @@ routes delay = do
         json $ newSim
 
     post ("situations" <//> var) $ \name -> do
-        command <- jsonBody' :: ApiAction Command
+        command <- jsonBody' :: ServerAction Command
         let f = case command of
                   Start -> apply start
                   Halt -> apply halt
@@ -136,7 +136,7 @@ routes delay = do
                 json $ result >>= view name
 
     post "situations" $ do
-        name <- jsonBody' :: ApiAction Name
+        name <- jsonBody' :: ServerAction Name
         (AppState ref) <- Web.Spock.getState
         sim <- liftIO $ readIORef ref
         let newSim = sim >>= add name

@@ -1,6 +1,6 @@
 module Main where
 
-import Api                 (app)
+import Server                 (app)
 import System.Environment  (getArgs)
 import Web.Spock           (runSpock)
 
