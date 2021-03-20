@@ -5,7 +5,7 @@ module Simulation ( Simulation (..)
                   , addSituationForName
                   , apply
                   , applyAll
-                  , changeSituation
+                  , Simulation.change
                   , newSimulation
                   , viewForName)
     where
@@ -53,10 +53,10 @@ checkName name (Simulation ss) = case M.lookup name ss of
                                    Nothing -> Left ("no situation exists with name:" ++ name)
                                    Just _ -> Right (Simulation ss)
 
-changeSituation :: CursorPosition -> Name -> Simulation -> Either String Simulation
-changeSituation pos name s = return s >>= checkName name
+change :: CursorPosition -> Name -> Simulation -> Either String Simulation
+change pos name s = return s >>= checkName name
     >>= (\(Simulation ss) -> let sit = fromJust (M.lookup name ss) in case state sit of
-                                                                      Started -> Right (Simulation (M.adjust (change pos) name ss))
+                                                                      Started -> Right (Simulation (M.adjust (Situation.change pos) name ss))
                                                                       Halted -> Left ("situation for " ++ name ++ " is not started"))
 
 apply :: (Situation -> Situation) -> Name -> Simulation -> Either String Simulation

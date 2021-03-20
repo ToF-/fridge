@@ -4,7 +4,7 @@ module SimulationSpec
     where
 
 import Test.Hspec
-import Situation
+import Situation hiding (change)
 import Simulation
 import Data.Aeson
 
@@ -31,11 +31,11 @@ spec = do
             v `shouldBe` Right (Started, 15.0, 100)
 
         it "can change a situation once created" $ do
-            let v = simWith tof >>= apply start tof >>= changeSituation 50 tof >>= viewForName tof
+            let v = simWith tof >>= apply start tof >>= change 50 tof >>= viewForName tof
             v `shouldBe` Right (Started, 15.0, 50)
 
         it "cannot change a situation that is not started" $ do
-            let v = simWith tof >>= changeSituation 50 tof >>= viewForName tof
+            let v = simWith tof >>= change 50 tof >>= viewForName tof
             v `shouldBe` Left "situation for ToF is not started"
 
         it "can halt a situation once created" $ do
