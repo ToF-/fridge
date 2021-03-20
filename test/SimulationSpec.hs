@@ -11,7 +11,7 @@ import Data.Aeson
 spec :: SpecWith ()
 spec = do
     let tof = "ToF"
-        simWith name = pure newSimulation >>= addSituationForName name
+        simWith name = pure newSimulation >>= add name
     describe "A simulation" $ do
         it "is initially empty" $ do
             let v = pure newSimulation
@@ -23,7 +23,7 @@ spec = do
             v `shouldBe` Right (Halted, 15.0, 100)
 
         it "cannot add a situation with an already existing name" $ do
-            let v = simWith tof >>= addSituationForName tof >>= viewForName tof
+            let v = simWith tof >>= add tof >>= viewForName tof
             v `shouldBe` Left "a situation already exists with name:ToF"
 
         it "can start a situation once created" $ do
@@ -51,18 +51,18 @@ spec = do
             v `shouldBe` Right (Started, 14.0, 100)
 
         it "can start all situations" $ do
-            let sim = simWith tof >>= addSituationForName "Ben" >>= applyAll start
+            let sim = simWith tof >>= add "Ben" >>= applyAll start
             (sim >>= viewForName tof) `shouldBe` Right (Started, 15.0, 100)
             (sim >>= viewForName "Ben") `shouldBe` Right (Started, 15.0, 100)
 
         it "can halt all situations" $ do
-            let sim = simWith tof >>= addSituationForName "Ben"
+            let sim = simWith tof >>= add "Ben"
                      >>= applyAll start >>= applyAll halt
             (sim >>= viewForName tof) `shouldBe` Right (Halted, 15.0, 100)
             (sim >>= viewForName "Ben") `shouldBe` Right (Halted, 15.0, 100)
 
         it "can evolve all situations that are started" $ do
-            let sim = simWith tof >>= addSituationForName "Ben" >>=  addSituationForName "Gus"
+            let sim = simWith tof >>= add "Ben" >>=  add "Gus"
                     >>= applyAll start >>= apply halt "Gus" >>= applyAll evolve
             (sim >>= viewForName tof) `shouldBe` Right (Started, 14.0, 100)
             (sim >>= viewForName "Ben") `shouldBe` Right (Started, 14.0, 100)

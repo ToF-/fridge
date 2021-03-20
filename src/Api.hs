@@ -18,7 +18,7 @@ import Network.HTTP.Types.Status     (status200, status201, status202, status204
 import Network.Wai                   (Middleware)
 import Network.Wai.Middleware.Static (addBase, staticPolicy)
 import Room                          (cursorPosition, temperature)
-import Simulation                    (Name, Simulation (..), addSituationForName, apply, applyAll, change, viewForName, newSimulation)
+import Simulation                    (Name, Simulation (..), add, apply, applyAll, change, viewForName, newSimulation)
 import Situation                     (evolve, halt, room, reset, start, state)
 import Web.Spock                     (SpockM, SpockAction, json, jsonBody', get, getState, middleware, param', post, redirect, root, setStatus, spock, var, (<//>))
 import Web.Spock.Config              (defaultSpockCfg, PoolOrConn(PCNoDatabase))
@@ -93,7 +93,7 @@ routes delay = do
         name <- param' "name"
         (AppState ref) <- Web.Spock.getState
         sim <- liftIO $ readIORef ref
-        let newSim = sim >>= addSituationForName name
+        let newSim = sim >>= add name
         _ <- case newSim of
             Left s -> return s
             Right _ -> do
@@ -139,7 +139,7 @@ routes delay = do
         name <- jsonBody' :: ApiAction Name
         (AppState ref) <- Web.Spock.getState
         sim <- liftIO $ readIORef ref
-        let newSim = sim >>= addSituationForName name
+        let newSim = sim >>= add name
         case newSim of
             Left _ -> do
                 setStatus status204

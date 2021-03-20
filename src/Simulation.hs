@@ -2,7 +2,7 @@
 module Simulation ( Simulation (..)
                   , SimulationState
                   , Name
-                  , addSituationForName
+                  , add
                   , apply
                   , applyAll
                   , Simulation.change
@@ -35,8 +35,8 @@ viewForName name simulation = view <$> situation
         situation = maybeToEither message (name ?? simulation)
         message   = "no situation exists with name:" ++ name
 
-addSituationForName :: Name -> Simulation -> Either String Simulation
-addSituationForName name simulation = 
+add :: Name -> Simulation -> Either String Simulation
+add name simulation = 
     case (name ?? simulation) of
       Nothing -> pure (name !> simulation)
       Just _  -> Left ("a situation already exists with name:" ++ name)
