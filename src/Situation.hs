@@ -2,7 +2,7 @@
 module Situation ( Situation
                  , SituationView
                  , State (..)
-                 , change
+                 , Situation.change
                  , Situation.evolve
                  , halt
                  , history

@@ -4,7 +4,7 @@ module SituationSpec
     where
 
 import Data.Aeson
-import Room hiding (evolve)
+import Room hiding (change, evolve)
 import Situation
 import Test.Hspec
 

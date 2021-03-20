@@ -2,7 +2,7 @@
 module Room ( Room
             , Temperature
             , CursorPosition
-            , changeCursorPosition
+            , change
             , cursorPosition
             , evolve
             , newRoom
@@ -23,8 +23,8 @@ instance ToJSON Room
 newRoom :: Room
 newRoom = Room [15.0, 15.0, 15.0, 15.0, 15.0] 100
 
-changeCursorPosition :: Room -> CursorPosition -> Room
-changeCursorPosition room curPos = room { cursorPosition = (min 200 (max 0 curPos)) }
+change :: Room -> CursorPosition -> Room
+change room curPos = room { cursorPosition = (min 200 (max 0 curPos)) }
 
 temperature :: Room -> Temperature
 temperature room = head (temperatures room)

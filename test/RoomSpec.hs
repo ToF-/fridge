@@ -20,15 +20,15 @@ spec = do
             cursorPosition room `shouldBe` 100
 
         it "can have its cursor position changed" $ do
-            let room = changeCursorPosition newRoom 20
+            let room = change newRoom 20
             cursorPosition room `shouldBe` 20
 
         it "cannot have its cursor position changed lower than zero" $ do
-            let room = changeCursorPosition newRoom (-1)
+            let room = change newRoom (-1)
             cursorPosition room `shouldBe` 0
 
         it "cannot have its cursor position changed higher than 200" $ do
-            let room = changeCursorPosition newRoom 201
+            let room = change newRoom 201
             cursorPosition room `shouldBe` 200
 
         it "has its temperature evolving at each evolution" $ do
@@ -41,9 +41,9 @@ spec = do
             temperature (evolutions 6 newRoom) `shouldBe` 9.333333333333334
 
         it "has its temperature evolving depending on cursor position" $ do
-            temperature (evolve (changeCursorPosition newRoom 50))
+            temperature (evolve (change newRoom 50))
                 `shouldBe` 12.333333333333334
-            temperature (evolve (evolve (changeCursorPosition newRoom 200)))
+            temperature (evolve (evolve (change newRoom 200)))
                 `shouldBe` 19.666666666666664
 
         it "can be encoded into json" $ do
