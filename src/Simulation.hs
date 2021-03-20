@@ -14,7 +14,7 @@ import Control.FromSum (maybeToEither)
 import Data.Aeson
 import Data.Map as M
 import GHC.Generics
-import Room
+import Room hiding (change)
 import Situation
 
 
@@ -60,7 +60,7 @@ change pos name simulation =
     case (name ?? simulation) of
       Nothing -> nonExisting name
       Just situation -> case state situation of
-                          Started -> Right $ Simulation { situations = M.adjust (Situation.change pos) name (situations simulation) }
+                          Started -> apply (Situation.change pos) name simulation
                           Halted -> Left ("situation for " ++ name ++ " is not started")
 
 apply :: (Situation -> Situation) -> Name -> Simulation -> Either String Simulation
