@@ -31,7 +31,7 @@ spec = do
             v `shouldBe` Right (Started, 15.0, 100)
 
         it "can change a situation once created" $ do
-            let v = simWith tof >>= apply start tof >>= changeSituation 50 tof >>= viewForName tof 
+            let v = simWith tof >>= apply start tof >>= changeSituation 50 tof >>= viewForName tof
             v `shouldBe` Right (Started, 15.0, 50)
 
         it "cannot change a situation that is not started" $ do
@@ -46,27 +46,30 @@ spec = do
             let v = simWith tof >>= apply start tof >>= apply reset tof >>= viewForName tof
             v `shouldBe` Right (Halted, 15.0, 100)
 
-        it "can tick a situation once created" $ do
-            let v = simWith tof >>= apply start tof >>= apply tick tof >>= viewForName tof
+        it "can evolve a situation once created" $ do
+            let v = simWith tof >>= apply start tof >>= apply evolve tof >>= viewForName tof
             v `shouldBe` Right (Started, 14.0, 100)
 
         it "can start all situations" $ do
-            let sim = return newSimulation >>= addSituationForName tof >>= addSituationForName "Ben" >>= applyAll start
+            let sim = simWith tof >>= addSituationForName "Ben" >>= applyAll start
             (sim >>= viewForName tof) `shouldBe` Right (Started, 15.0, 100)
             (sim >>= viewForName "Ben") `shouldBe` Right (Started, 15.0, 100)
 
         it "can halt all situations" $ do
-            let sim = return newSimulation >>= addSituationForName tof >>= addSituationForName "Ben" >>= applyAll start >>= applyAll halt
+            let sim = simWith tof >>= addSituationForName "Ben"
+                     >>= applyAll start >>= applyAll halt
             (sim >>= viewForName tof) `shouldBe` Right (Halted, 15.0, 100)
             (sim >>= viewForName "Ben") `shouldBe` Right (Halted, 15.0, 100)
 
-        it "can tick all situations that are started" $ do
-            let sim = return newSimulation >>= addSituationForName tof >>= addSituationForName "Ben" >>=  addSituationForName "Gus" >>= applyAll start >>= apply halt "Gus" >>= applyAll tick
+        it "can evolve all situations that are started" $ do
+            let sim = simWith tof >>= addSituationForName "Ben" >>=  addSituationForName "Gus"
+                    >>= applyAll start >>= apply halt "Gus" >>= applyAll evolve
             (sim >>= viewForName tof) `shouldBe` Right (Started, 14.0, 100)
             (sim >>= viewForName "Ben") `shouldBe` Right (Started, 14.0, 100)
             (sim >>= viewForName "Gus") `shouldBe` Right (Halted, 15.0, 100)
 
         it "can be encoded as JSON" $ do
-            let sim = return newSimulation >>= addSituationForName tof
-            encode sim `shouldBe` "{\"Right\":{\"situations\":{\"ToF\":{\"rooms\":[{\"temperatures\":[15,15,15,15,15],\"cursorPosition\":100}],\"state\":\"Halted\"}}}}"
+            let sim = simWith tof
+            encode sim `shouldBe`
+                "{\"Right\":{\"situations\":{\"ToF\":{\"rooms\":[{\"temperatures\":[15,15,15,15,15],\"cursorPosition\":100}],\"state\":\"Halted\"}}}}"
 

@@ -19,7 +19,7 @@ import Network.Wai                   (Middleware)
 import Network.Wai.Middleware.Static (addBase, staticPolicy)
 import Room                          (cursorPosition, temperature)
 import Simulation                    (Name, Simulation (..), addSituationForName, apply, applyAll, changeSituation, viewForName, newSimulation)
-import Situation                     (halt, room, reset, start, state, tick)
+import Situation                     (evolve, halt, room, reset, start, state)
 import Web.Spock                     (SpockM, SpockAction, json, jsonBody', get, getState, middleware, param', post, redirect, root, setStatus, spock, var, (<//>))
 import Web.Spock.Config              (defaultSpockCfg, PoolOrConn(PCNoDatabase))
 import Web.Spock.Lucid               (lucid)
@@ -41,7 +41,7 @@ type ApiAction a = SpockAction () () AppState a
 repeatedAction :: IORef (Either String Simulation) -> IO ()
 repeatedAction ref = do
     simulation <- readIORef ref
-    let simulation' = simulation >>= applyAll tick
+    let simulation' = simulation >>= applyAll evolve
     _ <- atomicModifyIORef' ref $ const (simulation',simulation')
     return ()
 

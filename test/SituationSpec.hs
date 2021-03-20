@@ -4,7 +4,7 @@ module SituationSpec
     where
 
 import Data.Aeson
-import Room
+import Room hiding (evolve)
 import Situation
 import Test.Hspec
 
@@ -19,33 +19,33 @@ spec = do
 
         it "can be started and evolve" $ do
             state (start newSituation) `shouldBe` Started
-            temperature (room (tick (start newSituation))) `shouldBe` 14.0
+            temperature (room (evolve (start newSituation))) `shouldBe` 14.0
 
         it "cannot evolve unless started" $ do
-            temperature (room (tick newSituation)) `shouldBe`
+            temperature (room (evolve newSituation)) `shouldBe`
                 temperature (room newSituation)
 
         it "can be halted" $ do
             state (halt (start newSituation)) `shouldBe` Halted
-            temperature (room (tick (halt (start newSituation)))) `shouldBe` 15.0
+            temperature (room (evolve (halt (start newSituation)))) `shouldBe` 15.0
 
         it "has an history" $ do
             let s = start newSituation
-                s' = tick s
-                s''= tick s'
+                s' = evolve s
+                s''= evolve s'
                 h = history s''
             h!!0 `shouldBe` room s
             h!!1 `shouldBe` room s'
             h!!2 `shouldBe` room s''
 
         it "can be reset" $ do
-            let s = reset (tick (tick (tick (start newSituation))))
+            let s = reset (evolve (evolve (evolve (start newSituation))))
             state s `shouldBe` Halted
             length (history s) `shouldBe` 1
             temperature (room s) `shouldBe` 15.0
 
         it "has a view that present state, temperature (rounded) and cursor position" $ do
-            let s = tick (tick (tick (tick (tick (tick (start newSituation))))))
+            let s = evolve (evolve (evolve (evolve (evolve (evolve (start newSituation))))))
             view s  `shouldBe` (Started, 9.3, 100)
 
 
