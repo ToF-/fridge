@@ -16,7 +16,7 @@ newServer = Server status200 "" new Nothing
 getSituation :: Name -> Server -> Server
 getSituation name server = 
     let sim = simulation server
-        result = viewForName name sim
+        result = view name sim
     in case result of 
          Right state -> Server status200 "" sim (Just state)
          Left msg ->    Server status204 msg sim Nothing
@@ -24,7 +24,7 @@ getSituation name server =
 postSituation :: Name -> Server -> Server
 postSituation name server = 
     let sim = simulation server
-        result = add name sim >>= viewForName name
+        result = add name sim >>= view name
     in case result of
          Right state -> Server status200 "" sim (Just state)
          Left msg -> Server status201 msg sim Nothing

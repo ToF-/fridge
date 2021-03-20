@@ -7,7 +7,7 @@ module Simulation ( Simulation (..)
                   , applyAll
                   , Simulation.change
                   , Simulation.new
-                  , viewForName)
+                  , Simulation.view)
     where
 
 import Control.FromSum (maybeToEither)
@@ -29,8 +29,8 @@ instance ToJSON Simulation
 new :: Simulation
 new = Simulation (M.empty)
 
-viewForName :: Name -> Simulation -> Either String SituationView
-viewForName name simulation = view <$> situation
+view :: Name -> Simulation -> Either String SituationView
+view name simulation = Situation.view <$> situation
     where
         situation = maybeToEither message (name ?? simulation)
         message   = "no situation exists with name:" ++ name
