@@ -2,25 +2,22 @@
 
 ## GET requests
 
-    GET /situations/:name  Accept: application/json  Response: 200 Content-type: application/json
-    { "situation": { "name": <String>, "temperature": <Double>, "cursor_position": <Integer> } }
+    /      ---> display: the fridge game, message, _name_, [start]
+    start ---> POST room/ { name }
 
+    /room/:name  ---> if room state is STARTED: display: name, temperature, _command_
+                                                every 60s ---> PUT room/:name { command: integer } then GET room/:name
+                      if room state is FINAL: display: name, table { time, temp, command } [CSV]
+                                                CSV ---> /room/csv/:name
 
-
+    /room/csv/:name ---> raw csv text of history
 
 ## POST requests
 
-    POST /situations/:name Response: 201 Content-type: application/json
-
-    { "situation": { "name": <String> } }
-    { "situation": { "name": <String>, "temperature": <Double>, "cursor_position": <Integer> } }
-
+    room/ { name } ---> if not existing, not FINAL ---> room creation, then GET room/:name
+                        if existing ---> GET room/:name
+                        if FINAL ---> GET room/:name
 
 ## PUT requests
 
-    PUT  /situations/:name Response: 200 Content-type: application/json
-    { "situation": { "cursor_position": <Integer> } }
-
-## DELETE requests
-
-    DELETE /situations/:name Response: 204 
+    room/:name { command:integer } ---> if existing, not FINAL ---> update room, then GET room/:name
