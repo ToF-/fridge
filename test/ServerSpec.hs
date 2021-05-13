@@ -15,11 +15,11 @@ spec = do
     with (spockAsApp (app 60)) $ do
         describe "GET /situations" $ do
             it "serves the situations, initially empty" $ do
-                get "/situations" `shouldRespondWith` 
+                get "/situations" `shouldRespondWith`
                     "{\"Right\":{\"situations\":{}}}" { matchStatus = 200 }
 
             it "serves a Left value when queried for non existing situation" $ do
-                get "/situations/Ben" `shouldRespondWith` 
+                get "/situations/Ben" `shouldRespondWith`
                     "{\"Left\":\"no situation exists with name:Ben\"}"
                         { matchStatus = 204 }
 
@@ -27,7 +27,7 @@ spec = do
                 post "/situations" "\"Gus\"" `shouldRespondWith`
                     "{\"Right\":[\"Halted\",15.0,100]}"
                         { matchStatus = 201 }
-                get "/situations/Gus" `shouldRespondWith` 
+                get "/situations/Gus" `shouldRespondWith`
                     "{\"Right\":[\"Halted\",15.0,100]}"
                         { matchStatus = 200 }
 
@@ -51,7 +51,7 @@ spec = do
                 post "/situations/Gus" "{\"tag\":\"Start\"}" `shouldRespondWith`
                     "{\"Right\":[\"Started\",15.0,100]}"
                         { matchStatus = 202 }
-                    
+
             it "serves a Right value when halting a situation" $ do
                 post "/situations" "\"Gus\"" `shouldRespondWith`
                     "{\"Right\":[\"Halted\",15.0,100]}"
@@ -106,6 +106,6 @@ spec = do
                     "{\"Right\":[\"Started\",15.0,100]}"
                         { matchStatus = 202 }
                 liftIO $ threadDelay 1000000
-                get "/situations/Gus" `shouldRespondWith` 
+                get "/situations/Gus" `shouldRespondWith`
                     "{\"Right\":[\"Started\",14.0,100]}"
                         { matchStatus = 200 }
