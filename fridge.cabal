@@ -1,13 +1,13 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.33.0.
+-- This file has been generated from package.yaml by hpack version 0.34.4.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: d0c7aea1c50ae9b45c7039037cb4b7d182103c0952ecadced28d8716cbd42822
+-- hash: 3b093b95487a09b50ab8f5020e53400d0254a95ce8fe441f8a8f77e92d5fe10a
 
 name:           fridge
-version:        0.1.0.0
+version:        0.2.0.0
 description:    Please see the README on GitHub at <https://github.com/githubuser/fridge#readme>
 homepage:       https://github.com/githubuser/fridge#readme
 bug-reports:    https://github.com/githubuser/fridge/issues
@@ -26,12 +26,6 @@ source-repository head
   location: https://github.com/githubuser/fridge
 
 library
-  exposed-modules:
-      Lib
-      Room
-      Server
-      Simulation
-      Situation
   other-modules:
       Paths_fridge
   hs-source-dirs:
@@ -83,10 +77,6 @@ test-suite fridge-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      RoomSpec
-      ServerSpec
-      SimulationSpec
-      SituationSpec
       Paths_fridge
   hs-source-dirs:
       test
