@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 3b093b95487a09b50ab8f5020e53400d0254a95ce8fe441f8a8f77e92d5fe10a
+-- hash: 347ed61ec465967ada28015a82ba09ca5b38b3742ee15497719f114e83375e66
 
 name:           fridge
 version:        0.2.0.0
@@ -26,6 +26,8 @@ source-repository head
   location: https://github.com/githubuser/fridge
 
 library
+  exposed-modules:
+      Server
   other-modules:
       Paths_fridge
   hs-source-dirs:
@@ -77,6 +79,7 @@ test-suite fridge-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      ServerSpec
       Paths_fridge
   hs-source-dirs:
       test

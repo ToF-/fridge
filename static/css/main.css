@@ -1,12 +1,16 @@
 body {
   background-color: lightgrey;
-  color: darkgreen;
+  color: darkblue;
   font-family: verdana;
   font-size: 20px;
 }
-
+.center-div {
+     margin: 0 auto;
+     width: 1000px;
+     text-align: center;
+}
 h1 {
-  color: darkgreen;
+  color: darkblue;
   text-align: center;
 }
 
