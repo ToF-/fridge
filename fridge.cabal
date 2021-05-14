@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 347ed61ec465967ada28015a82ba09ca5b38b3742ee15497719f114e83375e66
+-- hash: cd5cafddad29bbe9037880eea1552df5efb305978fcef3f2e0208cf25211419f
 
 name:           fridge
 version:        0.2.0.0
@@ -32,7 +32,7 @@ library
       Paths_fridge
   hs-source-dirs:
       src
-  ghc-options: -freverse-errors -Wall -Werror -Wincomplete-patterns
+  ghc-options: -freverse-errors -Werror -Wincomplete-patterns
   build-depends:
       Spock
     , Spock-lucid
@@ -83,7 +83,7 @@ test-suite fridge-test
       Paths_fridge
   hs-source-dirs:
       test
-  ghc-options: -freverse-errors -threaded -rtsopts -with-rtsopts=-N -Wall -Werror -Wincomplete-patterns
+  ghc-options: -freverse-errors -threaded -rtsopts -with-rtsopts=-N -Werror -Wincomplete-patterns
   build-depends:
       Spock
     , Spock-lucid

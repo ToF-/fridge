@@ -6,4 +6,4 @@ import Web.Spock           (runSpock)
 
 main :: IO ()
 main = do
-    runSpock 8080 (app 60)
+    runSpock 8080 (app 6)

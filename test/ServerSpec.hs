@@ -16,3 +16,11 @@ spec = do
                 get "/" `shouldRespondWith`
                     "<head><link href=\"/css/main.css\" type=\"text/css\" rel=\"stylesheet\"><meta content=\"60\" http-equiv=\"Refresh\"></head><body><div class=\"center-div\"><h1>Welcome to the fridge game!</h1><input name=\"name\" type=\"text\"><input value=\"Start\" name=\"start\" type=\"submit\"></div></body>"
                         { matchStatus = 200 }
+
+        describe "GET /room/:name" $ do
+            it "serves the room page" $ do
+                get "/room/ToF" `shouldRespondWith`
+                    ""
+                    { matchStatus = 200 }
+
+
