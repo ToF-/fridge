@@ -9,8 +9,7 @@ async function getTemperature() {
             return;
         }
         response.json().then(function(room) {
-            tempElement.innerHTML = '';
-            tempElement.innerHTML = Math.round(room.temperature*10) / 10;
+            tempElement.innerHTML = room.temperature;
         });
     }
     )
