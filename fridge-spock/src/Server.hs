@@ -1,4 +1,5 @@
 {-# LANGUAGE DeriveGeneric     #-}
+{-# LANGUAGE DataKinds         #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ExtendedDefaultRules #-}
 
@@ -9,7 +10,7 @@ import Network.Wai                   (Middleware)
 import Data.String                   (fromString)
 import Network.Wai.Middleware.Static (addBase, staticPolicy)
 import GHC.Int                       (Int64)
-import Web.Spock                     (SpockM, middleware, respondMiddleware, spock, get, root, (<//>), var, getState, json, setStatus, post, param', redirect, text)
+import Web.Spock                     (Path, SpockM, SpockCtxM, middleware, respondMiddleware, spock, get, root, (<//>), var, getState, json, setStatus, post, param', redirect, text, body)
 import Web.Spock.Config              (defaultSpockCfg, PoolOrConn(PCNoDatabase))
 import Web.Spock.Lucid               (lucid)
 import Lucid                         (Html, div_, class_,  h1_, body_, input_, name_, content_, head_, rel_, href_, link_, meta_, type_, httpEquiv_, value_, toHtml, br_, h2_, min_, max_, id_, span_, p_, script_, src_, oninput_, onsubmit_, form_, method_, action_, onclick_, onload_, table_, th_, tr_, td_)
@@ -27,6 +28,7 @@ import History                       (History (..), add, newHistory, lastMinute)
 
 data AppState = AppState (IORef (Map String (Room, History)))
 type Server = SpockM () () AppState ()
+
 
 type Delay = GHC.Int.Int64
 
@@ -62,7 +64,6 @@ mainBody = body_ $ do
                     form_ [method_ "post"] $ do
                         input_ [id_ "room_name", type_ "text", name_ "name"]
                         input_ [type_ "submit", name_ "start", value_ "Start"]
-                script_ [src_ "js/tools.js"] ""
 
 roomBody :: String -> RoomView -> Html ()
 roomBody name view = do
@@ -98,14 +99,18 @@ statBody name (History lines) = do
                     th_ "Command"
                     mapM_ statLineHtml lines
 
-routes :: Server
-routes = do
-    middleware (staticPolicy (addBase "static"))
+getRoot :: Web.Spock.SpockCtxM ctx conn sess st ()
+getRoot = do
     get root $ do
-        liftIO $ putStrLn "GET /"
+        liftIO $ putStrLn "responding to GET /"
         lucid $ do
             pageHead
             mainBody
+
+routes :: Server
+routes = do
+    middleware (staticPolicy (addBase "static"))
+    getRoot
 
     get (root <//> var) $ \name -> do
         liftIO $ putStrLn ("GET /" <> fromString name)
@@ -132,8 +137,10 @@ routes = do
           Nothing -> setStatus status204
 
     post root $ do
-        liftIO $ putStrLn "POST /"
+        theBody <- body
+        liftIO $ print theBody
         name <- param' "name"
+        liftIO $ putStrLn $ "responding to POST /" ++ " with param " ++ name
         (AppState ref) <- Web.Spock.getState
         refState <- liftIO $ readIORef ref
         liftIO $ atomicModifyIORef' ref $ \refState -> (M.insert name (open newRoom, newHistory) refState, ())

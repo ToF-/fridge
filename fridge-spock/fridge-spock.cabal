@@ -3,14 +3,12 @@ cabal-version: 1.12
 -- This file has been generated from package.yaml by hpack version 0.34.4.
 --
 -- see: https://github.com/sol/hpack
---
--- hash: ea9557b65c514c743c6b5345692cec1d8080e702550810e4a29fdf460622bb43
 
-name:           fridge
-version:        0.2.0.0
-description:    Please see the README on GitHub at <https://github.com/githubuser/fridge#readme>
-homepage:       https://github.com/githubuser/fridge#readme
-bug-reports:    https://github.com/githubuser/fridge/issues
+name:           fridge-spock
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/githubuser/fridge-spock#readme>
+homepage:       https://github.com/githubuser/fridge-spock#readme
+bug-reports:    https://github.com/githubuser/fridge-spock/issues
 author:         Author name here
 maintainer:     example@example.com
 copyright:      2021 Author name here
@@ -23,17 +21,18 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/githubuser/fridge
+  location: https://github.com/githubuser/fridge-spock
 
 library
   exposed-modules:
       History
+      Lib
       Room
       RoomState
       RoomView
       Server
   other-modules:
-      Paths_fridge
+      Paths_fridge_spock
   hs-source-dirs:
       src
   ghc-options: -freverse-errors -Werror -Wincomplete-patterns
@@ -42,6 +41,7 @@ library
     , Spock-lucid
     , aeson
     , base >=4.7 && <5
+    , bytestring
     , containers
     , from-sum
     , http-types
@@ -54,10 +54,10 @@ library
     , wai-middleware-static
   default-language: Haskell2010
 
-executable fridge-exe
+executable fridge-spock-exe
   main-is: Main.hs
   other-modules:
-      Paths_fridge
+      Paths_fridge_spock
   hs-source-dirs:
       app
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
@@ -66,8 +66,9 @@ executable fridge-exe
     , Spock-lucid
     , aeson
     , base >=4.7 && <5
+    , bytestring
     , containers
-    , fridge
+    , fridge-spock
     , from-sum
     , http-types
     , lucid
@@ -79,14 +80,15 @@ executable fridge-exe
     , wai-middleware-static
   default-language: Haskell2010
 
-test-suite fridge-test
+test-suite fridge-spock-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
       HistorySpec
       RoomSpec
       RoomViewSpec
-      Paths_fridge
+      ServerSpec
+      Paths_fridge_spock
   hs-source-dirs:
       test
   ghc-options: -freverse-errors -threaded -rtsopts -with-rtsopts=-N -Werror -Wincomplete-patterns
@@ -95,8 +97,9 @@ test-suite fridge-test
     , Spock-lucid
     , aeson
     , base >=4.7 && <5
+    , bytestring
     , containers
-    , fridge
+    , fridge-spock
     , from-sum
     , hspec
     , hspec-wai
@@ -107,5 +110,6 @@ test-suite fridge-test
     , text
     , timers
     , wai
+    , wai-extra
     , wai-middleware-static
   default-language: Haskell2010

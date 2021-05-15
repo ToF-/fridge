@@ -1,6 +1,6 @@
-name:                fridge
-version:             0.2.0.0
-github:              "githubuser/fridge"
+name:                fridge-yesod
+version:             0.1.0.0
+github:              "githubuser/fridge-yesod"
 license:             BSD3
 author:              "Author name here"
 maintainer:          "example@example.com"
@@ -17,33 +17,16 @@ extra-source-files:
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
 # common to point users to the README.md file.
-description:         Please see the README on GitHub at <https://github.com/githubuser/fridge#readme>
+description:         Please see the README on GitHub at <https://github.com/githubuser/fridge-yesod#readme>
 
 dependencies:
 - base >= 4.7 && < 5
-- Spock
-- aeson
-- text
-- mtl
-- containers
-- timers
-- suspend
-- wai
-- http-types
-- Spock-lucid
-- lucid
-- wai-middleware-static
-- from-sum
 
 library:
   source-dirs: src
-  ghc-options:
-  - -freverse-errors
-  - -Werror
-  - -Wincomplete-patterns
 
 executables:
-  fridge-exe:
+  fridge-yesod-exe:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
@@ -51,20 +34,15 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - fridge
+    - fridge-yesod
 
 tests:
-  fridge-test:
+  fridge-yesod-test:
     main:                Spec.hs
     source-dirs:         test
     ghc-options:
-    - -freverse-errors
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
-    - -Werror
-    - -Wincomplete-patterns
     dependencies:
-    - fridge
-    - hspec
-    - hspec-wai
+    - fridge-yesod
