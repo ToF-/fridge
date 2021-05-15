@@ -25,14 +25,19 @@ source-repository head
 
 library
   exposed-modules:
-      Lib
+      Server
   other-modules:
       Paths_fridge_yesod
   hs-source-dirs:
       src
   build-depends:
       base >=4.7 && <5
+    , http-types
+    , lucid
+    , text
     , yesod
+    , yesod-core
+    , yesod-lucid
   default-language: Haskell2010
 
 executable fridge-yesod-exe
@@ -45,7 +50,12 @@ executable fridge-yesod-exe
   build-depends:
       base >=4.7 && <5
     , fridge-yesod
+    , http-types
+    , lucid
+    , text
     , yesod
+    , yesod-core
+    , yesod-lucid
   default-language: Haskell2010
 
 test-suite fridge-yesod-test
@@ -59,5 +69,12 @@ test-suite fridge-yesod-test
   build-depends:
       base >=4.7 && <5
     , fridge-yesod
+    , hspec
+    , http-types
+    , lucid
+    , text
     , yesod
+    , yesod-core
+    , yesod-lucid
+    , yesod-test
   default-language: Haskell2010
