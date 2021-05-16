@@ -12,9 +12,14 @@ module Room ( Room
             , state
             , temperature)
     where
+import GHC.Generics
+import Data.Aeson
 
 data RoomState = Closed | Open
-    deriving (Eq, Show)
+    deriving (Generic, Eq, Show)
+
+instance ToJSON RoomState
+
 type Temperature = Double
 type Position = Int
 data Room = Room {
@@ -25,7 +30,9 @@ data Room = Room {
                     ,Temperature
                     ,Temperature),
     position :: Position }
-    deriving (Eq, Show)
+    deriving (Generic, Eq, Show)
+
+instance ToJSON Room
 
 newRoom :: Room
 newRoom = Room {
