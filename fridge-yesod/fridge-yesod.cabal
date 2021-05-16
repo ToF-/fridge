@@ -26,6 +26,7 @@ source-repository head
 library
   exposed-modules:
       History
+      Repository
       Room
       RoomView
       Server
@@ -37,6 +38,7 @@ library
   build-depends:
       aeson
     , base >=4.7 && <5
+    , containers
     , http-types
     , lucid
     , text
@@ -55,6 +57,7 @@ executable fridge-yesod-exe
   build-depends:
       aeson
     , base >=4.7 && <5
+    , containers
     , fridge-yesod
     , http-types
     , lucid
@@ -69,6 +72,7 @@ test-suite fridge-yesod-test
   main-is: Spec.hs
   other-modules:
       HistorySpec
+      RepositorySpec
       RoomSpec
       RoomViewSpec
       SimulationSpec
@@ -79,6 +83,7 @@ test-suite fridge-yesod-test
   build-depends:
       aeson
     , base >=4.7 && <5
+    , containers
     , fridge-yesod
     , hspec
     , http-types

@@ -28,6 +28,7 @@ dependencies:
 - text
 - http-types
 - aeson
+- containers
 
 library:
   source-dirs: src
