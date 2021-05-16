@@ -25,13 +25,18 @@ source-repository head
 
 library
   exposed-modules:
+      History
+      Room
+      RoomView
       Server
+      Simulation
   other-modules:
       Paths_fridge_yesod
   hs-source-dirs:
       src
   build-depends:
-      base >=4.7 && <5
+      aeson
+    , base >=4.7 && <5
     , http-types
     , lucid
     , text
@@ -48,7 +53,8 @@ executable fridge-yesod-exe
       app
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      aeson
+    , base >=4.7 && <5
     , fridge-yesod
     , http-types
     , lucid
@@ -62,12 +68,17 @@ test-suite fridge-yesod-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      HistorySpec
+      RoomSpec
+      RoomViewSpec
+      SimulationSpec
       Paths_fridge_yesod
   hs-source-dirs:
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      aeson
+    , base >=4.7 && <5
     , fridge-yesod
     , hspec
     , http-types

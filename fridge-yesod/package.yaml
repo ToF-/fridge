@@ -27,6 +27,7 @@ dependencies:
 - yesod-lucid
 - text
 - http-types
+- aeson
 
 library:
   source-dirs: src
