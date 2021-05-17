@@ -25,10 +25,12 @@ dependencies:
 - yesod-core
 - lucid
 - yesod-lucid
+- yesod-form
 - text
 - http-types
 - aeson
 - containers
+- time
 
 library:
   source-dirs: src
