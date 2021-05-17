@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module RepositorySpec
     where
 
@@ -24,3 +22,7 @@ spec = do
             Simulation.roomView <$> (findSimulation "ToF" r) `shouldBe` Just (RoomView {temperature = 14.0, position = 100})
             Simulation.roomView <$> (findSimulation "Gus" r) `shouldBe` Just (RoomView {temperature = 14.0, position = 100})
 
+        it "can change a simulation for a name" $ do
+            let r = add "ToF" newRepository
+                r'= Repository.change "ToF" 50 r
+            Simulation.roomView <$> (findSimulation "ToF" r) `shouldBe`Just (RoomView {temperature = 15.0, position = 100})

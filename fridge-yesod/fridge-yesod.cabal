@@ -26,6 +26,7 @@ source-repository head
 library
   exposed-modules:
       History
+      IORepositoryRef
       Repository
       Room
       RoomView
@@ -72,6 +73,7 @@ test-suite fridge-yesod-test
   main-is: Spec.hs
   other-modules:
       HistorySpec
+      IORepositoryRefSpec
       RepositorySpec
       RoomSpec
       RoomViewSpec
