@@ -2,6 +2,7 @@
 module Main where
 
 import      Room (change, close, evolve, newRoom, open)
+import      RoomView (roomView)
 import      Data.Aeson (encode)
 import      Data.ByteString.Lazy.Char8 as BS
 
@@ -14,3 +15,4 @@ main = do
     BS.putStrLn $ "here it is changing: " <> (encode $ change 50 $ evolve $ open room)
     BS.putStrLn $ "here it is evolving again: " <> (encode $ evolve $ change 50 $ evolve $ open room)
     BS.putStrLn $ "here it is closed: " <> (encode $ close $ evolve $ change 50 $ evolve $ open room)
+    BS.putStrLn $ "here is a view of a room: " <> (encode $ roomView $ evolve $ change 50 $ evolve $ open room)

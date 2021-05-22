@@ -26,7 +26,12 @@ source-repository head
 library
   exposed-modules:
       Fridge
+      History
+      IORepositoryRef
+      Repository
       Room
+      RoomView
+      Simulation
   other-modules:
       Paths_core
   hs-source-dirs:
@@ -35,6 +40,7 @@ library
       aeson
     , base >=4.7 && <5
     , bytestring
+    , containers
   default-language: Haskell2010
 
 executable core-exe
@@ -48,6 +54,7 @@ executable core-exe
       aeson
     , base >=4.7 && <5
     , bytestring
+    , containers
     , core
   default-language: Haskell2010
 
@@ -55,7 +62,11 @@ test-suite core-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      IORepositoryRefSpec
+      RepositorySpec
       RoomSpec
+      RoomViewSpec
+      SimulationSpec
       Paths_core
   hs-source-dirs:
       test
@@ -64,6 +75,7 @@ test-suite core-test
       aeson
     , base >=4.7 && <5
     , bytestring
+    , containers
     , core
     , hspec
   default-language: Haskell2010
