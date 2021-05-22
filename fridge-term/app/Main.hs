@@ -1,6 +1,7 @@
 module Main where
 
-import Lib
+import Command
+import IORepositoryRef
 
 main :: IO ()
-main = someFunc
+main = putStrLn "hello"

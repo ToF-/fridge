@@ -33,6 +33,7 @@ library
       src
   build-depends:
       base >=4.7 && <5
+    , core
   default-language: Haskell2010
 
 executable fridge-term-exe
@@ -44,6 +45,7 @@ executable fridge-term-exe
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
+    , core
     , fridge-term
   default-language: Haskell2010
 
@@ -58,6 +60,7 @@ test-suite fridge-term-test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
+    , core
     , fridge-term
     , hspec
   default-language: Haskell2010

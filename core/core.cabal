@@ -7,8 +7,8 @@ cabal-version: 1.12
 name:           core
 version:        0.1.0.0
 description:    Please see the README on GitHub at <https://github.com/githubuser/core#readme>
-homepage:       https://github.com/githubuser/core#readme
-bug-reports:    https://github.com/githubuser/core/issues
+homepage:       https://github.com/githubuser/fridge#readme
+bug-reports:    https://github.com/githubuser/fridge/issues
 author:         Author name here
 maintainer:     example@example.com
 copyright:      2021 Author name here
@@ -21,7 +21,7 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/githubuser/core
+  location: https://github.com/githubuser/fridge
 
 library
   exposed-modules:
