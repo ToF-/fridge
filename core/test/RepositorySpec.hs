@@ -26,3 +26,7 @@ spec = do
             let r = add "ToF" newRepository
                 r'= Repository.change "ToF" 50 r
             Simulation.roomView <$> (findSimulation "ToF" r) `shouldBe`Just (RoomView {temperature = 15.0, position = 100})
+
+        it "can list all its simulations" $ do
+            let r = add "Gus" (add "ToF" newRepository)
+            simulations r `shouldBe` [newSimulation "Gus", newSimulation "ToF"]

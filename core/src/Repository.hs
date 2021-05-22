@@ -21,3 +21,6 @@ evolve (Repository m) = Repository (M.map S.evolve m)
 
 change :: String -> Position -> Repository -> Repository
 change name pos (Repository m) = Repository (M.adjust (\sim -> S.change pos sim) name m)
+
+simulations :: Repository -> [Simulation]
+simulations (Repository m) = Prelude.map snd (M.toList m)
