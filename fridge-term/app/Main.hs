@@ -25,6 +25,8 @@ repeatedAction :: IORepositoryRef -> IO ()
 repeatedAction ref = do
     putStrLn "updating all rooms"
     update evolve ref
+    putStrLn "saving simulations"
+    save "simulations.json" ref
 
 getDelay :: IO (Maybe GHC.Int.Int64)
 getDelay = do
