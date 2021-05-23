@@ -38,8 +38,10 @@ getDelay = do
             [] -> do
                 putStrLn "argument must be a number between 10 and 60"
                 return Nothing
-            ((n,_):_) -> if (n >= 10) && (n <= 60) 
-                            then return (Just n)
+            ((n,_):_) -> if (n >= 10) && (n <= 60)
+                            then do
+                                putStrLn ("setting evolution delay to " <> (show n) <>" seconds")
+                                return (Just n)
                             else do
                                 putStrLn "argument must be a number between 10 and 60"
                                 return Nothing
