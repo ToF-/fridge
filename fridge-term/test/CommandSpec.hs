@@ -27,6 +27,9 @@ spec = do
             command "simulation ToF" `shouldBe`
                 (Right $ Simulation "ToF")
 
+        it "quitting the simulation" $ do
+            command "quit"  `shouldBe` (Right Quit)
+
         it "other than that a command is not recognized" $ do
             command "foo bar    qux" `shouldBe`
                 (Left "unknown command: foo bar qux")

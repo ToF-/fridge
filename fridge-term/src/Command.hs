@@ -7,6 +7,7 @@ data Command = Add String
              | Change String Int
              | Rooms
              | Simulation String
+             | Quit
     deriving (Eq, Show)
 
 
@@ -33,6 +34,8 @@ interpret (cmd:args) | cmd `equals` "rooms" = Right $ Rooms
 
 interpret (cmd:args) | cmd `equals` "simulation" =
     pure Simulation <*> head <$>  (required "name" args)
+
+interpret (cmd:args) | cmd `equals` "quit" = Right Quit
 
 interpret ss = Left ("unknown command: " <> (unwords ss))
 

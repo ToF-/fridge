@@ -8,6 +8,7 @@ import RoomView as V
 import Command
 import Data.Aeson
 import Data.ByteString.Lazy.Char8 (unpack)
+import System.Exit
 
 execute :: Command -> IORepositoryRef -> IO ()
 execute (Add name) ref = do
@@ -33,6 +34,10 @@ execute Rooms ref = do
 execute (Command.Simulation name) ref = do
     withName name ref $ \sim -> do
         putStrLn (unpack (encode sim))
+
+execute Quit _ = do
+    putStrLn "quitting fridge-term"
+    exitSuccess
 
 withName :: String -> IORepositoryRef -> (Simulation -> IO ()) -> IO ()
 withName name ref action = do

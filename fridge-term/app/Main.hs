@@ -9,6 +9,7 @@ import Command
 import IORepositoryRef
 import Repository
 import Terminal
+import System.Exit
 
 process :: IORepositoryRef -> IO ()
 process ref = do
@@ -47,7 +48,7 @@ main :: IO ()
 main = do
     found <- getDelay
     case found of
-      Nothing -> return ()
+      Nothing -> exitFailure
       Just delay -> do
         putStrLn "welcome to fridge-term"
         ref <- newIORepositoryRef
