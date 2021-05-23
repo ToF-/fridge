@@ -32,6 +32,17 @@ spec = do
             sim <- retrieve "ToF" ref
             sim `shouldBe` Just (Simulation.change 50 (Simulation.evolve (newSimulation "ToF")))
 
+        it "can be saved as a JSON object" $ do
+            ref <- newIORepositoryRef
+            create "ToF" ref
+            update Repository.evolve ref
+            update (Repository.change "ToF" 50) ref
+            save "myrepo.json" ref
+            content <- readFile "myrepo.json"
+            content `shouldBe`
+                "[{\"room\":{\"temperatures\":[14,15,15,15,15],\"state\":\"Open\",\"position\":50},\"history\":[[1,14,100]],\"name\":\"ToF\"}]"
+
+
 
 
 

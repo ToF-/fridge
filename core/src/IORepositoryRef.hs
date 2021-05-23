@@ -4,6 +4,8 @@ module IORepositoryRef
 import Data.IORef
 import Repository
 import Simulation
+import Data.Aeson
+import Data.ByteString.Lazy.Char8 as BS
 
 type IORepositoryRef = IORef Repository
 
@@ -25,3 +27,8 @@ retrieve name ref = do
 update :: (Repository -> Repository) -> IORepositoryRef -> IO ()
 update f ref = atomicModifyIORef' ref $
     \rep -> (f rep, ())
+
+save :: FilePath -> IORepositoryRef -> IO ()
+save filePath ref = do
+    rep <- readIORepositoryRef ref
+    BS.writeFile filePath (encode (simulations rep))
