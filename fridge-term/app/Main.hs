@@ -3,6 +3,8 @@ module Main where
 import Control.Monad
 import Control.Concurrent.Suspend    (sDelay)
 import Control.Concurrent.Timer      (repeatedTimer)
+import GHC.Int
+import System.Environment
 import Command
 import IORepositoryRef
 import Repository
@@ -23,9 +25,31 @@ repeatedAction ref = do
     putStrLn "updating all rooms"
     update evolve ref
 
+getDelay :: IO (Maybe GHC.Int.Int64)
+getDelay = do
+    args <- getArgs
+    case length args < 1 of
+      True -> do
+          putStrLn "setting evolution delay to 60 seconds"
+          return (Just 60)
+      False -> do
+          case reads (args !! 0) of
+            [] -> do
+                putStrLn "argument must be a number between 10 and 60"
+                return Nothing
+            ((n,_):_) -> if (n >= 10) && (n <= 60) 
+                            then return (Just n)
+                            else do
+                                putStrLn "argument must be a number between 10 and 60"
+                                return Nothing
+
 main :: IO ()
 main = do
-    putStrLn "welcome to fridge-term"
-    ref <- newIORepositoryRef
-    _ <- repeatedTimer (repeatedAction ref) (sDelay delay)
-    forever (process ref)
+    found <- getDelay
+    case found of
+      Nothing -> return ()
+      Just delay -> do
+        putStrLn "welcome to fridge-term"
+        ref <- newIORepositoryRef
+        _ <- repeatedTimer (repeatedAction ref) (sDelay delay)
+        forever (process ref)
