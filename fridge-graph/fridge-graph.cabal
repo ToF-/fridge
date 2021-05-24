@@ -39,7 +39,7 @@ library
     , blaze-html
     , blaze-markup
     , bytestring
-    , core
+    , fridge-core
     , text
   default-language: Haskell2010
 
@@ -57,7 +57,7 @@ executable fridge-graph-exe
     , blaze-html
     , blaze-markup
     , bytestring
-    , core
+    , fridge-core
     , fridge-graph
     , text
   default-language: Haskell2010
@@ -79,7 +79,7 @@ test-suite fridge-graph-test
     , blaze-html
     , blaze-markup
     , bytestring
-    , core
+    , fridge-core
     , fridge-graph
     , hspec
     , text
