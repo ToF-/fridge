@@ -1,5 +1,6 @@
 {-# LANGUAGE DeriveGeneric #-}
 module History ( History (..)
+               , HistoryLine
                , newHistory
                , add
                , lastMinute)
