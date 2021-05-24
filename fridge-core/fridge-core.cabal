@@ -4,11 +4,11 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 
-name:           fridge-term
-version:        0.1.0.0
-description:    Please see the README on GitHub at <https://github.com/githubuser/fridge-term#readme>
-homepage:       https://github.com/githubuser/fridge-term#readme
-bug-reports:    https://github.com/githubuser/fridge-term/issues
+name:           fridge-core
+version:        0.1.2.1
+description:    Please see the README on GitHub at <https://github.com/githubuser/fridge-core#readme>
+homepage:       https://github.com/githubuser/fridge#readme
+bug-reports:    https://github.com/githubuser/fridge/issues
 author:         Author name here
 maintainer:     example@example.com
 copyright:      2021 Author name here
@@ -21,30 +21,33 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/githubuser/fridge-term
+  location: https://github.com/githubuser/fridge
 
 library
   exposed-modules:
-      Command
+      Fridge
+      History
+      IORepositoryRef
       Lib
-      Terminal
+      Repository
+      Room
+      RoomView
+      Simulation
   other-modules:
-      Paths_fridge_term
+      Paths_fridge_core
   hs-source-dirs:
       src
   build-depends:
       aeson
     , base >=4.7 && <5
     , bytestring
-    , fridge-core
-    , suspend
-    , timers
+    , containers
   default-language: Haskell2010
 
-executable fridge-term-exe
+executable fridge-core-exe
   main-is: Main.hs
   other-modules:
-      Paths_fridge_term
+      Paths_fridge_core
   hs-source-dirs:
       app
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
@@ -52,18 +55,20 @@ executable fridge-term-exe
       aeson
     , base >=4.7 && <5
     , bytestring
+    , containers
     , fridge-core
-    , fridge-term
-    , suspend
-    , timers
   default-language: Haskell2010
 
-test-suite fridge-term-test
+test-suite fridge-core-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      CommandSpec
-      Paths_fridge_term
+      IORepositoryRefSpec
+      RepositorySpec
+      RoomSpec
+      RoomViewSpec
+      SimulationSpec
+      Paths_fridge_core
   hs-source-dirs:
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
@@ -71,9 +76,7 @@ test-suite fridge-term-test
       aeson
     , base >=4.7 && <5
     , bytestring
+    , containers
     , fridge-core
-    , fridge-term
     , hspec
-    , suspend
-    , timers
   default-language: Haskell2010

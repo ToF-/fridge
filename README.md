@@ -1,23 +1,20 @@
 # fridge
 
-## GET requests
+/              GET  display welcome message, form [name] -> /room/:name POST
 
-    /      ---> display: the fridge game, message, _name_, [start]
-    start ---> POST room/ { name }
+/room:name     POST creates simulation for name if not existing alread, then /room:name GET
+/room:name     GET  display room for name,temperature,position cursor
+                    every 10 seconds : /state/:name {position} PUT with cursor position value
+                                       fetch /state/:name GET and display temperature
+                                       if the room.state is closed redirect to /graph/:name GET
 
-    /room/:name  ---> if room state is STARTED: display: name, temperature, _command_
-                                                every 60s ---> PUT room/:name { command: integer } then GET room/:name
-                      if room state is FINAL: display: name, table { time, temp, command } [CSV]
-                                                CSV ---> /room/csv/:name
+/state/:name  GET  return room's view (temperature and position)
+/state/:name  PUT  expects position   if name doesn't exist not found
+                                      if name exists, change the room positionn for name
 
-    /room/csv/:name ---> raw csv text of history
+/graph/:name GET  if name doesn't exist not found
+                  get the simulation for name, if room is not closed, not found
+                  create the graph page for simulation render this page
 
-## POST requests
 
-    room/ { name } ---> if not existing, not FINAL ---> room creation, then GET room/:name
-                        if existing ---> GET room/:name
-                        if FINAL ---> GET room/:name
 
-## PUT requests
-
-    room/:name { command:integer } ---> if existing, not FINAL ---> update room, then GET room/:name

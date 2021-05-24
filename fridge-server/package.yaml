@@ -1,6 +1,6 @@
-name:                fridge-term
+name:                fridge-server
 version:             0.1.0.0
-github:              "githubuser/fridge-term"
+github:              "githubuser/fridge-server"
 license:             BSD3
 author:              "Author name here"
 maintainer:          "example@example.com"
@@ -17,21 +17,35 @@ extra-source-files:
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
 # common to point users to the README.md file.
-description:         Please see the README on GitHub at <https://github.com/githubuser/fridge-term#readme>
+description:         Please see the README on GitHub at <https://github.com/githubuser/fridge-server#readme>
 
 dependencies:
 - base >= 4.7 && < 5
-- fridge-core
+- yesod
+- yesod-core
+- lucid
+- yesod-lucid
+- yesod-form
+- yesod-static
+- text
+- http-types
 - aeson
-- bytestring
+- containers
+- time
+- data-default
+- unordered-containers
+- vector
+- shakespeare
+- fridge-core
 - timers
 - suspend
+
 
 library:
   source-dirs: src
 
 executables:
-  fridge-term-exe:
+  fridge-server-exe:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
@@ -39,10 +53,10 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - fridge-term
+    - fridge-server
 
 tests:
-  fridge-term-test:
+  fridge-server-test:
     main:                Spec.hs
     source-dirs:         test
     ghc-options:
@@ -50,5 +64,6 @@ tests:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - fridge-term
+    - fridge-server
+    - yesod-test
     - hspec

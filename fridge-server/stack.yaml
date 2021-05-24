@@ -36,10 +36,10 @@ packages:
 # forks / in-progress versions pinned to a git hash. For example:
 #
 extra-deps:
+- yesod-lucid-0.1@sha256:5b7d725000583b192609c01ca3c6a9f8015d6e2a2be2a03125f65b3911ecdf0c,674
 - ../fridge-core
 - timers-0.2.0.4
 - suspend-0.2.0.0
-
 # - acme-missiles-0.3
 # - git: https://github.com/commercialhaskell/stack.git
 #   commit: e7b331f14bcffb8367cd58fbfc8b40ec7642100a
