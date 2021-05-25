@@ -12,20 +12,27 @@ import Control.Monad.IO.Class            (liftIO)
 import Network.HTTP.Types.Status         (internalServerError500)
 import IORepositoryRef                   (IORepositoryRef
                                          ,create
+                                         ,update
                                          ,retrieve
                                          )
 import Yesod.Form.Jquery                 (YesodJquery)
 import Yesod                             (Yesod
                                          ,Html
+                                         ,Value
                                          ,MForm
                                          ,FormResult (..)
                                          ,FormMessage
                                          ,RenderMessage
                                          ,defaultFormMessage
+                                         ,returnJson
+                                         ,notFound
                                          ,getYesod
                                          ,renderMessage
+                                         ,julius
                                          ,areq
                                          ,sendResponseStatus
+                                         ,requireJsonBody
+                                         ,toWidget
                                          ,defaultLayout
                                          ,generateFormPost
                                          ,mkYesod
@@ -42,6 +49,10 @@ import Data.ByteString.Char8 as BS       (putStrLn)
 import Data.Text                         (Text
                                          ,unpack)
 import Data.Text.Encoding                (encodeUtf8)
+import Text.Julius                       (JavascriptUrl)
+import Simulation                        (roomView)
+import RoomView                          (RoomView (..))
+import Repository                        (change)
 
 data FridgeApp = FridgeApp IORepositoryRef
 
@@ -51,7 +62,8 @@ data RoomName = RoomName { name :: Text }
 mkYesod "FridgeApp" [parseRoutes|
 /                 HomeR GET
 /room/#Text       RoomR GET
-/state/           StateR POST
+/newroom/         NewRoomR POST
+/state/#Text      StateR GET PUT
 |]
 
 instance Yesod FridgeApp
@@ -72,13 +84,35 @@ getHomeR = do
         [whamlet|
             <p> Welcome to the fridge game!
             <p> Please entre your room name
-            <form method=post action=@{StateR} enctype=#{enctype}>
+            <form method=post action=@{NewRoomR} enctype=#{enctype}>
                 ^{formWidget}
                 <button>Start
             |]
 
-postStateR :: Handler Html
-postStateR = do
+getStateR :: Text -> Handler Value
+getStateR name = do
+    (FridgeApp ref) <- getYesod
+    found <- liftIO $ retrieve (unpack name) ref
+    case found of
+      Just sim -> returnJson (Simulation.roomView sim)
+      Nothing -> notFound
+
+putStateR :: Text -> Handler Value
+putStateR name = do
+    let nameAsString = unpack name
+    position <- requireJsonBody :: Handler Int
+    (FridgeApp ref) <- getYesod
+    found <- liftIO $ retrieve nameAsString ref
+    case found of
+      Just sim -> do
+          liftIO $ update  (change nameAsString position) ref
+          liftIO $ BS.putStrLn ("changed position for " <> (encodeUtf8 name))
+          returnJson (Simulation.roomView sim)
+      Nothing -> notFound
+
+
+postNewRoomR :: Handler Html
+postNewRoomR = do
     ((result, formWidget), enctype) <- runFormPost roomNameForm
     case result of
         FormSuccess (RoomName name) -> do
@@ -105,14 +139,94 @@ postStateR = do
                     <p> s
                     |]
 
+sliderScript :: Text.Julius.JavascriptUrl url
+sliderScript = [julius|
+    var slider = document.getElementById("range");
+    var output = document.getElementById("position");
+    output.innerHTML = slider.value;
+    var currentValue = output.innerHTML;
+    slider.oninput = function() {
+          output.innerHTML = this.value;
+    }
+    |]
+
+refreshScript :: Text.Julius.JavascriptUrl url
+refreshScript = [julius|
+    async function putPosition() {
+        if (currentValue != output.innerHTML) {
+           let nameElement = document.getElementById("name");
+           let name = nameElement.innerHTML;
+           let posElement = document.getElementById("position");
+           let pos = posElement.innerHTML;
+           fetch('/state/'+name, {
+            method: 'put',
+            body: pos
+           }).then(function(response) {
+            return response.json();
+          }).then(function(data) {
+            console.log('put position');
+         });
+         currentValue = output.innerHTML;
+         }
+     }
+    async function getTemperature() {
+        let nameElement = document.getElementById("name");
+        let name = nameElement.innerHTML;
+        let tempElement = document.getElementById("temperature");
+        fetch('/state/'+name)
+        .then(function(response) {
+            if (response.status !== 200) {
+                console.log('error fetching ' + 'temperature/' + name + ' status: ' + response.status);
+                return;
+            }
+            response.json().then(function(room) {
+                console.log(room);
+                tempElement.innerHTML = room.temperature;
+            });
+        }
+        )
+        .catch(function(err) {
+            console.log('Fetch Error :-S', err);
+        });
+
+    }
+    function setRepeatedRefresh() {
+        window.setInterval(getTemperature, 30000);
+        window.setInterval(putPosition, 1000);
+    }
+|]
 
 
 getRoomR :: Text -> Handler Html
 getRoomR name = do
-    defaultLayout
-        [whamlet|
-            <p> room #{name}
+    (FridgeApp ref) <- getYesod
+    let nameAsString = unpack name
+    found <- liftIO $ retrieve nameAsString ref
+    case found of
+      Nothing -> do
+          defaultLayout
+            [whamlet|
+                <p>There is no room with name #{name}
+                <form method=get action=@{HomeR}>
+                    <button>Got it
+                    |]
+      Just sim -> do
+          let view = roomView sim
+          let temp = show (temperature view)
+          let pos  = show (position view)
+          defaultLayout $ do
+            [whamlet|
+                <body onload=setRepeatedRefresh()>
+                    <p>Room:
+                    <div id="name">#{name}
+                    <p>Temperature:
+                    <div id="temperature">#{temp}
+                    <p>Position:
+                    <div id="position">#{pos}
+                    <input id="range" type="range" min="1" max="200" value=#{pos}>
             |]
+            toWidget sliderScript
+            toWidget refreshScript
 
 serve :: IORepositoryRef -> IO ()
 serve ref = do
