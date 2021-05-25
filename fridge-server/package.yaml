@@ -20,25 +20,26 @@ extra-source-files:
 description:         Please see the README on GitHub at <https://github.com/githubuser/fridge-server#readme>
 
 dependencies:
-- base >= 4.7 && < 5
-- yesod
-- yesod-core
-- lucid
-- yesod-lucid
-- yesod-form
-- yesod-static
-- text
-- http-types
 - aeson
+- base >= 4.7 && < 5
+- bytestring
 - containers
-- time
 - data-default
+- fridge-core
+- http-types
+- lucid
+- shakespeare
+- suspend
+- text
+- time
+- timers
 - unordered-containers
 - vector
-- shakespeare
-- fridge-core
-- timers
-- suspend
+- yesod
+- yesod-core
+- yesod-form
+- yesod-lucid
+- yesod-static
 
 
 library:

@@ -8,7 +8,12 @@
 module Server
     where
 
-import IORepositoryRef                   (IORepositoryRef)
+import Control.Monad.IO.Class            (liftIO)
+import Network.HTTP.Types.Status         (internalServerError500)
+import IORepositoryRef                   (IORepositoryRef
+                                         ,create
+                                         ,retrieve
+                                         )
 import Yesod.Form.Jquery                 (YesodJquery)
 import Yesod                             (Yesod
                                          ,Html
@@ -17,8 +22,10 @@ import Yesod                             (Yesod
                                          ,FormMessage
                                          ,RenderMessage
                                          ,defaultFormMessage
+                                         ,getYesod
                                          ,renderMessage
                                          ,areq
+                                         ,sendResponseStatus
                                          ,defaultLayout
                                          ,generateFormPost
                                          ,mkYesod
@@ -31,8 +38,11 @@ import Yesod                             (Yesod
                                          ,warp
                                          ,whamlet
                                          )
+import Data.ByteString.Char8 as BS       (putStrLn)
+import Data.Text                         (Text
+                                         ,unpack)
+import Data.Text.Encoding                (encodeUtf8)
 
-import Data.Text                         (Text)
 data FridgeApp = FridgeApp IORepositoryRef
 
 data RoomName = RoomName { name :: Text }
@@ -64,15 +74,38 @@ getHomeR = do
             <p> Please entre your room name
             <form method=post action=@{StateR} enctype=#{enctype}>
                 ^{formWidget}
-                <button>Submit
+                <button>Start
             |]
 
 postStateR :: Handler Html
 postStateR = do
     ((result, formWidget), enctype) <- runFormPost roomNameForm
     case result of
-      FormSuccess (RoomName name) -> do
-          redirect (RoomR name)
+        FormSuccess (RoomName name) -> do
+            let nameAsString = unpack name
+            (FridgeApp ref) <- getYesod
+            found <- liftIO $ retrieve nameAsString ref
+            case found of
+                Just _ -> do
+                    defaultLayout
+                        [whamlet|
+                            <p> A room with name #{name} already exists.
+                            <form method=get action=@{HomeR} enctype=#{enctype}>
+                                <button>Got it
+                        |]
+                Nothing -> do
+                    liftIO $ create nameAsString ref
+                    liftIO $ BS.putStrLn ("created room for name " <> (encodeUtf8 name))
+                    redirect (RoomR name)
+        FormFailure (m) -> do
+            liftIO $ print m
+            defaultLayout
+                [whamlet|
+                    $forall s <- m
+                    <p> s
+                    |]
+
+
 
 getRoomR :: Text -> Handler Html
 getRoomR name = do

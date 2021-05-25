@@ -34,6 +34,7 @@ library
   build-depends:
       aeson
     , base >=4.7 && <5
+    , bytestring
     , containers
     , data-default
     , fridge-core
@@ -63,6 +64,7 @@ executable fridge-server-exe
   build-depends:
       aeson
     , base >=4.7 && <5
+    , bytestring
     , containers
     , data-default
     , fridge-core
@@ -94,6 +96,7 @@ test-suite fridge-server-test
   build-depends:
       aeson
     , base >=4.7 && <5
+    , bytestring
     , containers
     , data-default
     , fridge-core
