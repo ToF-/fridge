@@ -34,10 +34,12 @@ library
   build-depends:
       aeson
     , base >=4.7 && <5
+    , blaze
     , bytestring
     , containers
     , data-default
     , fridge-core
+    , fridge-graph
     , http-types
     , lucid
     , shakespeare
@@ -64,10 +66,12 @@ executable fridge-server-exe
   build-depends:
       aeson
     , base >=4.7 && <5
+    , blaze
     , bytestring
     , containers
     , data-default
     , fridge-core
+    , fridge-graph
     , fridge-server
     , http-types
     , lucid
@@ -96,10 +100,12 @@ test-suite fridge-server-test
   build-depends:
       aeson
     , base >=4.7 && <5
+    , blaze
     , bytestring
     , containers
     , data-default
     , fridge-core
+    , fridge-graph
     , fridge-server
     , hspec
     , http-types

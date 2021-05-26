@@ -50,9 +50,15 @@ import Data.Text                         (Text
                                          ,unpack)
 import Data.Text.Encoding                (encodeUtf8)
 import Text.Julius                       (JavascriptUrl)
-import Simulation                        (roomView)
+import Simulation                        (Simulation
+                                         ,room
+                                         ,roomView
+                                         ,name)
 import RoomView                          (RoomView (..))
 import Repository                        (change)
+import GraphHtml                         (graphHtml)
+import Room                              (RoomState (..)
+                                         ,state)
 
 data FridgeApp = FridgeApp IORepositoryRef
 
@@ -83,7 +89,7 @@ getHomeR = do
     defaultLayout
         [whamlet|
             <p> Welcome to the fridge game!
-            <p> Please entre your room name
+            <p> Please enter your name
             <form method=post action=@{NewRoomR} enctype=#{enctype}>
                 ^{formWidget}
                 <button>Start
@@ -197,36 +203,43 @@ refreshScript = [julius|
 |]
 
 
+openRoomPage :: Simulation -> Handler Html
+openRoomPage sim = do
+    let roomName = Simulation.name sim
+    let view = roomView sim
+    let temp = show (temperature view)
+    let pos  = show (position view)
+    defaultLayout $ do
+        [whamlet|
+            <body onload=setRepeatedRefresh()>
+                <p>Room:
+                <div id="name">#{roomName}
+                <p>Temperature:
+                <div id="temperature">#{temp}
+                <p>Position:
+                <div id="position">#{pos}
+                <input id="range" type="range" min="1" max="200" value=#{pos}>
+        |]
+        toWidget sliderScript
+        toWidget refreshScript
+
+closedRoomPage :: Simulation -> Handler Html
+closedRoomPage sim = defaultLayout (toWidget (graphHtml sim))
+
 getRoomR :: Text -> Handler Html
 getRoomR name = do
     (FridgeApp ref) <- getYesod
     let nameAsString = unpack name
     found <- liftIO $ retrieve nameAsString ref
     case found of
-      Nothing -> do
+        Nothing -> do
           defaultLayout
             [whamlet|
                 <p>There is no room with name #{name}
                 <form method=get action=@{HomeR}>
                     <button>Got it
                     |]
-      Just sim -> do
-          let view = roomView sim
-          let temp = show (temperature view)
-          let pos  = show (position view)
-          defaultLayout $ do
-            [whamlet|
-                <body onload=setRepeatedRefresh()>
-                    <p>Room:
-                    <div id="name">#{name}
-                    <p>Temperature:
-                    <div id="temperature">#{temp}
-                    <p>Position:
-                    <div id="position">#{pos}
-                    <input id="range" type="range" min="1" max="200" value=#{pos}>
-            |]
-            toWidget sliderScript
-            toWidget refreshScript
+        Just sim -> if state (room (sim)) == Open then openRoomPage sim else closedRoomPage sim
 
 serve :: IORepositoryRef -> IO ()
 serve ref = do

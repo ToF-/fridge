@@ -26,6 +26,7 @@ dependencies:
 - containers
 - data-default
 - fridge-core
+- fridge-graph
 - http-types
 - lucid
 - shakespeare
@@ -40,6 +41,7 @@ dependencies:
 - yesod-form
 - yesod-lucid
 - yesod-static
+- blaze
 
 
 library:
