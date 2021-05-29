@@ -42,6 +42,7 @@ dependencies:
 - yesod-lucid
 - yesod-static
 - blaze
+- cryptonite
 
 
 library:

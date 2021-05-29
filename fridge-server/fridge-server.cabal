@@ -37,6 +37,7 @@ library
     , blaze
     , bytestring
     , containers
+    , cryptonite
     , data-default
     , fridge-core
     , fridge-graph
@@ -69,6 +70,7 @@ executable fridge-server-exe
     , blaze
     , bytestring
     , containers
+    , cryptonite
     , data-default
     , fridge-core
     , fridge-graph
@@ -103,6 +105,7 @@ test-suite fridge-server-test
     , blaze
     , bytestring
     , containers
+    , cryptonite
     , data-default
     , fridge-core
     , fridge-graph

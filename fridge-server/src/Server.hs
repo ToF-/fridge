@@ -42,6 +42,7 @@ import Yesod                             (Yesod
                                          ,renderRoute
                                          ,runFormPost
                                          ,textField
+                                         ,passwordField
                                          ,warp
                                          ,whamlet
                                          )
@@ -57,12 +58,16 @@ import Simulation                        (Simulation
 import RoomView                          (RoomView (..))
 import Repository                        (change)
 import GraphHtml                         (graphHtml)
+import Crypto.Hash                       (Digest
+                                         ,SHA3_512
+                                         ,hash)
 import Room                              (RoomState (..)
                                          ,state)
 
 data FridgeApp = FridgeApp IORepositoryRef
 
-data RoomName = RoomName { name :: Text }
+data RoomName = RoomName { name :: Text,
+                           passWord :: Text }
     deriving Show
 
 mkYesod "FridgeApp" [parseRoutes|
@@ -79,9 +84,16 @@ instance YesodJquery FridgeApp
 instance RenderMessage FridgeApp FormMessage where
     renderMessage _ _ = defaultFormMessage
 
+checkPassword :: Text -> IO Bool
+checkPassword pwd = do
+    content <- readFile "session"
+    let result = show (hash (encodeUtf8 pwd) :: Digest SHA3_512)
+    return (result == content)
+
 roomNameForm :: Html -> MForm Handler (FormResult RoomName, Widget)
 roomNameForm = renderDivs $ RoomName
     <$> areq textField "Name" Nothing
+    <*> areq passwordField "Password" Nothing
 
 getHomeR :: Handler Html
 getHomeR = do
@@ -89,7 +101,7 @@ getHomeR = do
     defaultLayout
         [whamlet|
             <p> Welcome to the fridge game!
-            <p> Please enter your name
+            <p> Please enter your name and the session password
             <form method=post action=@{NewRoomR} enctype=#{enctype}>
                 ^{formWidget}
                 <button>Start
@@ -121,22 +133,30 @@ postNewRoomR :: Handler Html
 postNewRoomR = do
     ((result, formWidget), enctype) <- runFormPost roomNameForm
     case result of
-        FormSuccess (RoomName name) -> do
+        FormSuccess (RoomName name pwd) -> do
             let nameAsString = unpack name
-            (FridgeApp ref) <- getYesod
-            found <- liftIO $ retrieve nameAsString ref
-            case found of
-                Just _ -> do
+            valid <- liftIO $ checkPassword pwd
+            case valid of
+                False -> do
                     defaultLayout
                         [whamlet|
-                            <p> A room with name #{name} already exists.
-                            <form method=get action=@{HomeR} enctype=#{enctype}>
-                                <button>Got it
-                        |]
-                Nothing -> do
-                    liftIO $ create nameAsString ref
-                    liftIO $ BS.putStrLn ("created room for name " <> (encodeUtf8 name))
-                    redirect (RoomR name)
+                            <p>Invalid password
+                            |]
+                True -> do
+                    (FridgeApp ref) <- getYesod
+                    found <- liftIO $ retrieve nameAsString ref
+                    case found of
+                        Just _ -> do
+                            defaultLayout
+                                [whamlet|
+                                    <p> A room with name #{name} already exists.
+                                    <form method=get action=@{HomeR} enctype=#{enctype}>
+                                        <button>Got it
+                                |]
+                        Nothing -> do
+                            liftIO $ create nameAsString ref
+                            liftIO $ BS.putStrLn ("created room for name " <> (encodeUtf8 name))
+                            redirect (RoomR name)
         FormFailure (m) -> do
             liftIO $ print m
             defaultLayout
